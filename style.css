@@ -757,22 +757,14 @@ body.light-theme .method-card:hover {
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 32px;
+    gap: 32px;
 }
 
-/* Position headers */
-.info-grid h3:nth-of-type(1) { grid-column: 1; grid-row: 1; }
-.info-grid h3:nth-of-type(2) { grid-column: 2; grid-row: 1; }
-
-/* Position column 1 (Steps) */
-.step-1 { grid-column: 1; grid-row: 2; }
-.step-2 { grid-column: 1; grid-row: 3; }
-.step-3 { grid-column: 1; grid-row: 4; }
-
-/* Position column 2 (Advantages) */
-.adv-1 { grid-column: 2; grid-row: 2; }
-.adv-2 { grid-column: 2; grid-row: 3; }
-.adv-3 { grid-column: 2; grid-row: 4; }
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
 .info-grid h3 {
     font-size: 16px;
@@ -945,18 +937,8 @@ body.light-theme .step-card, body.light-theme .advantage-card {
 
     .info-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 24px;
     }
-    
-    .info-grid h3:nth-of-type(1) { grid-column: 1; grid-row: 1; }
-    .step-1 { grid-column: 1; grid-row: 2; }
-    .step-2 { grid-column: 1; grid-row: 3; }
-    .step-3 { grid-column: 1; grid-row: 4; }
-    
-    .info-grid h3:nth-of-type(2) { grid-column: 1; grid-row: 5; margin-top: 16px; }
-    .adv-1 { grid-column: 1; grid-row: 6; }
-    .adv-2 { grid-column: 1; grid-row: 7; }
-    .adv-3 { grid-column: 1; grid-row: 8; }
     
     .donation-content {
         flex-direction: column;
