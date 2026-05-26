@@ -88,16 +88,22 @@ generateBtn.addEventListener('click', async () => {
         essayOutput.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Structuring essay and gathering context...</p>';
         outputCard.scrollIntoView({ behavior: 'smooth' });
 
-        const prompt = `Write an essay based on the topic: "${topic}". 
+        const prompt = `Write a complete, fully-formed essay based on the topic: "${topic}". 
                         Tone: "${toneSelect.value}". 
                         Writing Level / Audience: "${levelSelect.value}" (Controls depth of vocabulary, sentence complexity, and assumed prior knowledge).
                         Target Length: "${lengthSelect.value}".
                         Required Paragraphs: "${paragraphsSelect.value}".
                         ${avoidInput.value.trim() ? `Avoid Topics: "${avoidInput.value.trim()}" (Strictly avoid referencing or mentioning these topics).` : ''}
                         
-                        ${subheadingsInput.value.trim() ? `Use of Subheadings / Outline: "${subheadingsInput.value.trim()}" (Only add a single <h2> heading before the very first paragraph. Do NOT add headings before any other paragraphs).` : 'Do NOT use any subheadings or <h2> tags anywhere in the essay except optionally before the very first paragraph only. All other paragraphs must use plain <p> tags with no headings.'}
+                        Heading/Title Requirement: You MUST start the essay with a single <h2> heading containing a creative, engaging title for the essay. Do NOT use any other <h2> tags or subheadings anywhere else in the essay.
+                        
+                        ${subheadingsInput.value.trim() ? `Outline/Structure Instructions: Use the following outline to guide the flow of your paragraphs: "${subheadingsInput.value.trim()}". However, do NOT write out these outline points as headings. Transition between these sections smoothly using plain paragraphs.` : ''}
                          
-                        Structure the essay beautifully so that it has exactly ${paragraphsSelect.value.split(' ')[0]} body paragraphs. Output the response formatted directly as HTML paragraphs using <p> tags. Only the first paragraph may optionally have an <h2> heading above it. Do not include any markdown fences or metadata notes. Write only the HTML content.`;
+                        Formatting & Completion:
+                        1. Structure the essay beautifully so that it has exactly ${paragraphsSelect.value.split(' ')[0]} body paragraphs.
+                        2. Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
+                        3. Do not include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
+                        4. Ensure that the essay is fully completed. Do NOT cut off mid-sentence or mid-paragraph. All sentences must be fully completed and end with proper punctuation.`;
 
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
@@ -135,10 +141,18 @@ Third, always write in easy, clear grammar that any reader can understand withou
             let html = data.choices[0].message.content.trim();
 
             // Clean up any markdown code wrapper that the model sometimes outputs
+            html = html.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
+                       .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
+            
+            // If the model left an unclosed code block at the start, clean it up
             if (html.startsWith('```html')) {
-                html = html.substring(7, html.length - 3);
+                html = html.replace(/^```html\s*/, '');
             } else if (html.startsWith('```')) {
-                html = html.substring(3, html.length - 3);
+                html = html.replace(/^```\s*/, '');
+            }
+            // Remove any trailing unclosed code block indicators
+            if (html.endsWith('```')) {
+                html = html.replace(/\s*```$/, '');
             }
 
             essayOutput.innerHTML = html;
