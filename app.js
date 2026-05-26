@@ -259,7 +259,7 @@ humanizeBtn.addEventListener('click', async () => {
     
     const currentEssay = essayOutput.innerHTML.trim();
     if (!currentEssay || currentEssay.includes('Structuring essay') || currentEssay.includes('API Error')) {
-        alert('Please generate an essay first before humanizing.');
+        essayOutput.innerHTML = '<p style="color: #ef4444;">Please generate an essay first before humanizing.</p>';
         return;
     }
 
@@ -267,9 +267,13 @@ humanizeBtn.addEventListener('click', async () => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = currentEssay;
     const paragraphCount = tempDiv.querySelectorAll('p').length || 5;
-    
-    const cleanText = currentEssay.replace(/<[^>]*>/g, ' ');
-    const originalWordCount = cleanText.trim().split(/\s+/).filter(Boolean).length || 500;
+
+    // Extract plain text per paragraph — reduces payload size vs sending raw HTML
+    const paragraphTexts = Array.from(tempDiv.querySelectorAll('p')).map(p => p.innerText.trim());
+    const titleText = (tempDiv.querySelector('h2')?.innerText || '').trim();
+    const plainEssay = (titleText ? `Title: ${titleText}\n\n` : '') + paragraphTexts.join('\n\n');
+
+    const originalWordCount = plainEssay.trim().split(/\s+/).filter(Boolean).length || 500;
 
     try {
         isGenerating = true;
@@ -338,7 +342,7 @@ Paragraph count constraint: You MUST output exactly ${paragraphCount} body parag
 Word count constraint: Your humanized output MUST contain between ${originalWordCount - 15} and ${originalWordCount + 15} words (the input has exactly ${originalWordCount} words). Do not summarize or shorten any section.
 
 Essay:
-${currentEssay}`
+${plainEssay}`
                     }
                 ]
             })
@@ -349,7 +353,7 @@ ${currentEssay}`
         if (!response.ok) {
             const errMsg = data?.error?.message || `API error (HTTP ${response.status})`;
             essayOutput.innerHTML = currentEssay; // Restore original essay
-            alert(`Humanizer Error: ${errMsg}`);
+            essayOutput.insertAdjacentHTML('afterbegin', `<p style="color:#ef4444;margin-bottom:1rem;">Humanizer Error: ${errMsg}</p>`);
             return;
         }
 
@@ -367,11 +371,11 @@ ${currentEssay}`
             lucide.createIcons();
         } else {
             essayOutput.innerHTML = currentEssay; // Restore original
-            alert('No humanized content was returned. Please try again.');
+            essayOutput.insertAdjacentHTML('afterbegin', '<p style="color:#ef4444;margin-bottom:1rem;">No humanized content was returned. Please try again.</p>');
         }
     } catch (err) {
         essayOutput.innerHTML = currentEssay; // Restore original
-        alert('A network error occurred during humanization. Please try again.');
+        essayOutput.insertAdjacentHTML('afterbegin', '<p style="color:#ef4444;margin-bottom:1rem;">Network error during humanization. Please try again.</p>');
         console.error('Humanizer Network error:', err);
     } finally {
         isGenerating = false;
