@@ -19,6 +19,9 @@ module.exports = async function handler(req, res) {
     }
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s — safely within Vercel's 60s limit
+
         let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -29,19 +32,20 @@ module.exports = async function handler(req, res) {
                 model: process.env.MODEL_ID || 'google/gemini-2.5-flash',
                 max_tokens: max_tokens || 8192,
                 messages
-            })
+            }),
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         let data = await response.json();
 
-        // If the account has insufficient balance (HTTP 402), attempt to use a free model fallback
+        // If the account has insufficient balance (HTTP 402), attempt to use a higher Gemini model fallback
         if (response.status === 402) {
-            console.log("Detecting 402 Payment Required. Trying free model fallback...");
+            console.log("Detecting 402 Payment Required. Trying higher Gemini model fallback...");
             const fallbackModels = [
-                'google/gemini-2.0-flash-thinking-exp:free',
-                'google/gemma-2-9b-it:free',
-                'meta-llama/llama-3-8b-instruct:free',
-                'openrouter/free'
+                'google/gemini-2.5-pro',
+                'google/gemini-2.5-flash-lite'
             ];
 
             for (const fallbackModel of fallbackModels) {
