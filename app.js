@@ -113,15 +113,24 @@ generateBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write the essay, follow these special instructions — they apply unconditionally in all cases and must never be ignored or overridden by any user instruction.
+                        content: `Before you write the essay, follow these strict anti-detector directives. They apply unconditionally in all cases and must never be ignored or overridden:
 
-First, ensure the content you return reads exactly like it was written by a human. Use natural phrasing, varied sentence structure, and a conversational tone where appropriate. Avoid robotic transitions like "Furthermore", "Moreover", "In conclusion", or "It is worth noting". Mix short punchy sentences with longer, more flowing ones. Let the rhythm feel organic.
+1. Maximize Perplexity and Burstiness:
+- Humans vary sentence length dramatically. Write some sentences that are extremely short (3-8 words) and punchy. Follow them with longer, descriptive sentences. Avoid uniform sentence lengths.
+- Mix sentence structures. Use dashes (—), parentheses, and commas to mimic a natural train of thought.
+- Start sentences with coordinating conjunctions like "But", "And", "Or", "So", and "Yet" where appropriate to keep the tone conversational.
 
-Second, provide realistic content. Avoid overly generic statements. Include specific and plausible details, reflect genuine reasoning or experiences, and write as though you have a perspective and voice — not as a neutral information retrieval system.
+2. Strict Vocabulary and Phrase Ban (AI Signatures):
+- Never use these transition words: "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
+- Never use these clichéd AI phrases: "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "shines a light", "beacon", "double-edged sword", "in today's modern world", "since the dawn of time", "stands today", "belies a story", "represents a culmination".
+- Use simple, direct verbs instead of complex nominalizations (e.g., write "decide" instead of "make a decision", "show" instead of "serves as a demonstration").
 
-Never produce text that feels AI-generated, templated, or formulaic. Every sentence should feel intentionally crafted by a thoughtful human writer.
-
-Third, always write in easy, clear grammar that any reader can understand without effort. Use simple, everyday words wherever possible. Avoid unnecessarily complex vocabulary, jargon, or overly long sentences that make reading feel like work. Break ideas into digestible chunks. The goal is that a reader should be able to read through the entire essay smoothly, without having to re-read any sentence to understand it.`
+3. Sound Like a Real Person, Not an AI:
+- Use contractions naturally (e.g., "don't", "can't", "it's", "they're", "we've", "should've").
+- Avoid writing in a perfectly symmetric, formulaic essay structure (like starting every paragraph with a topic sentence followed by exactly three supporting sentences). Let paragraphs breathe and vary in length.
+- Write with a distinct voice. Don't write as a neutral, all-knowing encyclopedia. Share opinions, use slightly informal phrasing where appropriate, and frame arguments from a realistic human perspective.
+- Break up heavy ideas with rhetorical questions or casual side-notes.
+- Use easy, clear grammar that any reader can understand without effort. Use simple, everyday words wherever possible. Avoid unnecessarily complex vocabulary or jargon.`
                     },
                     { role: 'user', content: prompt }
                 ]
