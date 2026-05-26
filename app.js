@@ -103,7 +103,9 @@ generateBtn.addEventListener('click', async () => {
                         1. Structure the essay beautifully so that it has exactly ${paragraphsSelect.value.split(' ')[0]} body paragraphs.
                         2. Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
                         3. Do not include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
-                        4. Ensure that the essay is fully completed. Do NOT cut off mid-sentence or mid-paragraph. All sentences must be fully completed and end with proper punctuation.`;
+                        4. Ensure that the essay is fully completed. Do NOT cut off mid-sentence or mid-paragraph. All sentences must be fully completed and end with proper punctuation.
+                        5. Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything inside paragraphs must be standard weight.
+                        6. Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`;
 
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
@@ -122,7 +124,8 @@ STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
 Thoroughly review and rewrite the entire draft to completely strip out all AI-generated markers. You must actively apply these humanizing modifications:
 - Break up the sentence length pattern: Ensure extreme sentence length variation (burstiness). Some sentences must be very short and punchy (3-8 words), followed by longer, descriptive ones. Avoid uniform sentence lengths.
 - Inject human phrasing: Use contractions naturally (don't, can't, it's, they're, we've, should've). Start sentences with conjunctions (But, And, So, Yet, Or) where it fits the flow.
-- Use natural human punctuation: Add dashes (—), parentheses, or commas to mimic a natural human train of thought.
+- Use natural human punctuation: Use parentheses or commas to mimic a natural human train of thought. Absolutely do NOT use any em-dashes (—) or double hyphens (--) in the text.
+- Ban all bold formatting: Never format any words or phrases in bold. Do not use <strong> or <b> tags, and do not use markdown double asterisks (**). All paragraph content must be standard weight.
 - Ban AI signature transitions: Never use "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
 - Ban clichéd AI vocab: Never use phrases like "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "stands today", "belies a story", "represents a culmination".
 - Create a realistic human voice: Write like a passionate human writer who values logic and engaging storytelling, rather than a neutral, robotic database assistant.
