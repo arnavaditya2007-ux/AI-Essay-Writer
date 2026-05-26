@@ -212,22 +212,37 @@ humanizeBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero):
+                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student:
 
 STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these humanizing modifications:
-- Ditch the "Over-Polished" tone: Never make the text sound like a polished, elegant textbook. AI detectors flag elegant, academic phrasing. Humans write with slightly raw, direct, and casual vocabulary.
-- Prefer simple verbs & phrases over complex ones: Use simple descriptions (e.g., write "constructed" or "built" instead of "commissioned", "ended with" instead of "culminated in", "totally devastated" or "crushed" instead of "utterly heartbroken", "finished" instead of "wrapping up", "stands" instead of "stands proudly").
-- Write numbers as digits: Do NOT spell out numbers as words (e.g., write "20" instead of "twenty", "1653" instead of "sixteen fifty-three", "100s of years" instead of "hundreds of years"). Using numeric digits is a primary human writing fingerprint.
-- Introduce minor human errors & raw quirks: To trick AI checkers, intentionally make 1 or 2 extremely minor, natural human slip-ups in the entire essay. For example, use a spelling error like "definately" instead of "definitely" once, write "its" instead of "it's" once, or write a slightly informal run-on sentence.
-- Break up the sentence length pattern: Ensure extreme sentence length variation (burstiness). Some sentences must be very short and punchy (3-8 words) like "Seriously." or "Just think about it.", followed by longer, descriptive ones. Avoid uniform sentence lengths.
-- Inject human phrasing: Use contractions naturally (don't, can't, it's, they're, we've, should've). Start sentences with conjunctions (But, And, So, Yet, Or) where it fits the flow.
-- Use natural human punctuation: Use parentheses or commas to mimic a natural human train of thought. Absolutely do NOT use any em-dashes (—) or double hyphens (--) in the text.
-- Ban all bold formatting: Never format any words or phrases in bold. Do not use <strong> or <b> tags, and do not use markdown double asterisks (**). All paragraph content must be standard weight.
-- Ban AI signature transitions: Never use "Furthermore", "Moving on", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
-- Ban clichéd AI vocab: Never use phrases like "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "stands today", "belies a story", "represents a culmination".
-- Create a realistic human voice: Write like a passionate human writer who values logic and engaging storytelling, rather than a neutral, robotic database assistant. Keep phrasing slightly imperfect and down-to-earth.
-- Use clear, simple grammar: Write in easy, clear grammar that any reader can understand without effort. Use simple, everyday words. Avoid unnecessarily complex vocabulary or jargon.
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these student-style humanizing modifications:
+
+1. Language Quality & Awkward Phrasing:
+   - Do NOT make the text sound like a polished, perfect textbook. Humans write with slightly raw, uneven sentences and awkward phrasing.
+   - Let the phrasing be slightly unpolished. Avoid elegant, perfectly symmetrical syntax.
+
+2. Structure & Flow:
+   - Keep the structure less organized. Allow the writing to jump between ideas naturally, rather than having a rigid, formulaic flow.
+   - Use simple transitions (like "Also,", "Another thing is,", "Plus,", "But anyways,") instead of formal transitions (never use "Furthermore", "Moving on", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition").
+
+3. Personal Voice & Opinions:
+   - Inject a natural personal voice, opinions, or emotional tone. E.g., use phrases like "I think", "honestly", "personally", "in my opinion", "to be fair", "which is pretty crazy".
+   - Make it sound like a student sharing their thoughts, not a neutral robotic database.
+
+4. Specificity & Evidence:
+   - Instead of broad, safe statements, include specific examples. Write as if referencing classroom discussions, teacher explanations, personal understanding, or class notes (e.g. "like we learned in class," "our teacher mentioned that," "from what I understand,").
+
+5. Simpler Vocabulary & Repetition:
+   - Use simpler vocabulary mixed with common informal student expressions. Avoid advanced academic words. Replace words like "culminated", "testament", "tapestry", "unparalleled", "moreover", "nevertheless" with basic terms ("basically", "mostly", "ended up", "really cool", "stuff", "things").
+   - Allow slight natural repetition of simple words or ideas (e.g. repeating "huge" or "important" rather than using complex synonyms), reflecting a student's natural vocabulary.
+
+6. Mistakes & Digits:
+   - Real students do not spell out numbers. Write all numbers as digits (e.g., "20" instead of "twenty", "1653" instead of "sixteen fifty-three", "10,000s" instead of "tens of thousands").
+   - Intentionally introduce exactly 2 to 3 minor human typos or punctuation slips across the entire essay to look authentic (e.g., write "definately" instead of "definitely", "seperate" instead of "separate", "its" instead of "it's" or vice versa, or write a sentence fragment).
+
+7. Formatting & Punctuation Constraints:
+   - Absolutely NO bold formatting is allowed (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
+   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas, parentheses, or split into separate sentences.
 
 OUTPUT REQUIREMENT:
 Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
