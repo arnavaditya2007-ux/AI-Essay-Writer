@@ -1,0 +1,14 @@
+# Environment secrets — NEVER commit these
+.env
+.env.local
+.env.production
+
+# Vercel output
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/

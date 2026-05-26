@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Essay Writer - Simple & Powerful</title>
+    <meta name="description" content="Generate natural, undetectable, and highly original essays tailored to your writing tone, level, and length requirements with EssayAI.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="app-header">
+            <div class="header-top">
+                <div class="logo">
+                    <i data-lucide="pen-tool"></i>
+                    <span>EssayAI</span>
+                </div>
+                <button id="themeToggle" class="btn-theme" title="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+            </div>
+            <h1 class="main-title">Undetectable, Natural, and Original</h1>
+        </header>
+
+        <main class="main-content">
+            <!-- Input Card -->
+            <section class="card input-card">
+                <div class="form-group">
+                    <label for="topic">What should your essay be about?</label>
+                    <textarea id="topic" placeholder="e.g., The impact of artificial intelligence on modern healthcare education..." rows="4" autocomplete="off" spellcheck="false"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tone">Writing Tone</label>
+                        <select id="tone">
+                            <option value="Academic" selected>Academic</option>
+                            <option value="Persuasive">Persuasive</option>
+                            <option value="Informative">Informative</option>
+                            <option value="Creative">Creative</option>
+                            <option value="Professional">Professional</option>
+                            <option value="Casual">Casual</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Humorous">Humorous</option>
+                            <option value="Inspirational">Inspirational</option>
+                            <option value="Scientific">Scientific</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="level">Writing Level</label>
+                        <select id="level">
+                            <option value="High School">High School</option>
+                            <option value="Undergraduate" selected>Undergraduate</option>
+                            <option value="Graduate">Graduate</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="length">Target Length</label>
+                        <select id="length">
+                            <option value="Short (~500 words)">Short (~500 words)</option>
+                            <option value="Medium (~1000 words)" selected>Medium (~1000 words)</option>
+                            <option value="Long (~1500+ words)">Long (~1500+ words)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paragraphs">Paragraphs</label>
+                        <select id="paragraphs">
+                            <option value="3 paragraphs">3 Paragraphs</option>
+                            <option value="4 paragraphs">4 Paragraphs</option>
+                            <option value="5 paragraphs" selected>5 Paragraphs</option>
+                            <option value="6 paragraphs">6 Paragraphs</option>
+                            <option value="7 paragraphs">7 Paragraphs</option>
+                            <option value="8 paragraphs">8 Paragraphs</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="subheadings">Use of Subheadings (Optional)</label>
+                        <input type="text" id="subheadings" placeholder="e.g., Intro, Background, Conclusion..." autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="avoid">Avoid Topics (Optional)</label>
+                        <input type="text" id="avoid" placeholder="e.g., &quot;no politics&quot;, &quot;avoid 20th-century examples&quot;" autocomplete="off">
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn-primary">
+                    <span>Generate Essay</span>
+                    <i data-lucide="sparkles"></i>
+                </button>
+            </section>
+
+            <!-- Output Card -->
+            <section class="card output-card hidden" id="outputCard">
+                <div class="output-header">
+                    <h2>Generated Essay</h2>
+                    <button class="btn-copy" id="copyBtn" title="Copy to Clipboard">
+                        <i data-lucide="copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <div class="essay-viewport" id="essayOutput"></div>
+            </section>
+
+            <!-- How It Works & Advantages Section -->
+            <section class="card info-section">
+                <div class="info-intro">
+                    <h2>How EssayAI Achieves Human-Like Writing</h2>
+                    <p>Most AI essay writers produce text that feels stiff and repetitive, making them easy to detect. EssayAI takes a different approach by generating essays that are virtually indistinguishable from human writing. It creates a natural sentence flow, uses varied grammatical structures, and relies on original phrasing tailored to the context. The result is content that reads authentically, adapts to different tones and academic levels, and avoids the common patterns that give other AI tools away.</p>
+                </div>
+                
+                <div class="info-grid">
+                    <h3><i data-lucide="help-circle"></i> How It Works</h3>
+                    <h3><i data-lucide="shield-check"></i> Key Advantages</h3>
+
+                    <!-- Row 2 -->
+                    <div class="step-card step-1">
+                        <span class="step-num">1</span>
+                        <div>
+                            <h4>Contextual Analysis</h4>
+                            <p>Analyzes topic context, background information, and complexity before drafting.</p>
+                        </div>
+                    </div>
+
+                    <div class="advantage-card adv-1">
+                        <i data-lucide="eye-off" class="adv-icon"></i>
+                        <div>
+                            <h4>Undetectable Outputs</h4>
+                            <p>Bypasses rigid detector platforms by avoiding common machine probability patterns.</p>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="step-card step-2">
+                        <span class="step-num">2</span>
+                        <div>
+                            <h4>Sentence Variation</h4>
+                            <p>Intentionally varies sentence lengths and syntactic flows to mimic human burstiness.</p>
+                        </div>
+                    </div>
+
+                    <div class="advantage-card adv-2">
+                        <i data-lucide="sliders" class="adv-icon"></i>
+                        <div>
+                            <h4>Tailored Flexibility</h4>
+                            <p>Adapts fluidly across 10 academic writing tones and paragraph configurations.</p>
+                        </div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="step-card step-3">
+                        <span class="step-num">3</span>
+                        <div>
+                            <h4>Anti-AI Refining</h4>
+                            <p>Removes predictable AI transitions and repetitive phrasing to sound natural.</p>
+                        </div>
+                    </div>
+
+                    <div class="advantage-card adv-3">
+                        <i data-lucide="badge-check" class="adv-icon"></i>
+                        <div>
+                            <h4>100% Original Content</h4>
+                            <p>Generates contextually unique prose from scratch, eliminating risks of plagiarism.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Floating Donation Action Button -->
+    <a href="donate.html" class="btn-donate-float" title="Support the Developer">
+        <i data-lucide="heart"></i>
+    </a>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
