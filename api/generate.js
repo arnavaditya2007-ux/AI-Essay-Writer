@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +32,44 @@ module.exports = async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
+        let data = await response.json();
+
+        // If the account has insufficient balance (HTTP 402), attempt to use a free model fallback
+        if (response.status === 402) {
+            console.log("Detecting 402 Payment Required. Trying free model fallback...");
+            const fallbackModels = [
+                'google/gemini-2.0-flash-thinking-exp:free',
+                'google/gemma-2-9b-it:free',
+                'meta-llama/llama-3-8b-instruct:free',
+                'openrouter/free'
+            ];
+
+            for (const fallbackModel of fallbackModels) {
+                try {
+                    const fallbackResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: fallbackModel,
+                            max_tokens: max_tokens || 8192,
+                            messages
+                        })
+                    });
+
+                    const fallbackData = await fallbackResponse.json();
+                    if (fallbackResponse.ok) {
+                        return res.status(200).json(fallbackData);
+                    } else {
+                        console.error(`Fallback to ${fallbackModel} failed:`, fallbackData);
+                    }
+                } catch (fallbackErr) {
+                    console.error(`Error during fallback to ${fallbackModel}:`, fallbackErr);
+                }
+            }
+        }
 
         if (!response.ok) {
             return res.status(response.status).json({ error: data?.error?.message || 'API error' });

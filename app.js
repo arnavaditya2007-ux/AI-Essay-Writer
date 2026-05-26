@@ -212,55 +212,33 @@ humanizeBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student:
+                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
 
 STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict student-style humanizing modifications:
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based student-style humanizing modifications:
 
 1. Banned AI Casual Fillers (STRICTLY PROHIBITED):
-   - You must NEVER use the following words or phrases. They are common AI signatures when trying to sound "casual":
-     * basically, honestly, literally, actually, essentially, simply
-     * super (e.g., "super famous"), really (e.g., "really cool"), very
-     * thing, stuff (e.g., "mausoleum thing", "architecture stuff")
+   - You must NEVER use the following words or phrases. They are common AI signatures when trying to sound casual:
+     * basically, honestly, literally, actually, essentially, simply, really, super, very
+     * thing, stuff (e.g., do not write "mausoleum thing" or "architecture stuff")
      * "and yeah", "so yeah", "but anyways"
-     * "testament to", "not only... but also", "delve", "tapestry", "unparalleled", "culmination", "worth noting"
-   - Instead of fillers, write with simple direct words or leave them out.
+     * "testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "culmination", "stands proudly"
 
-2. Apostrophe Stripping (MANDATORY FOR CONTRACTIONS):
-   - You MUST write all contractions WITHOUT apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "couldnt", "theyre", "isnt").
-   - Real students omit these all the time when typing quickly, and it is a massive signal of human text to AI detectors.
+2. Syntactic Constraints:
+   - Sentence Length Cap: No sentence may exceed 15 words. Break up long clauses into short, abrupt sentences.
+   - No Apostrophes in Contractions: All contractions MUST be written without apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "arent"). Real students typing quickly omit these, and it is a major perplexity signal.
+   - Lowercase "i": The standalone pronoun "i" MUST always be lowercase "i".
+   - Inconsistent Capitalization: Occasionally write proper nouns in lowercase (e.g., write "india", "agra", "taj mahal", "shah jahan" in lowercase).
 
-3. Lowercase Standalone "i" & Inconsistent Capitalization:
-   - The standalone pronoun "i" MUST always be lowercase "i". E.g., "i think", "i mean", "what i learned".
-   - Occasionally leave proper nouns in lowercase (e.g., write "taj mahal" instead of "Taj Mahal", "india" instead of "India", "shah jahan" instead of "Shah Jahan").
+3. Typo Density & Errors:
+   - You MUST inject exactly 2 to 3 spelling typos per paragraph. Choose from: "definately" (definitely), "seperate" (separate), "becuase" (because), "recieve" (receive), "beleive" (believe), "archetict" (architect), "beatiful" (beautiful), "tottaly" (totally), "untill" (until).
+   - Use comma splices (joining two complete thoughts with just a comma, e.g., "they finished it in 1653, it took a long time").
 
-4. Sentence Length and Structure:
-   - Cap sentence length strictly. No sentence may exceed 15 words. Break up long compound thoughts into short, abrupt sentences.
-   - Use comma splices to join thoughts (e.g., "they worked on it for like 20 years, it took forever").
-   - Avoid triads/lists (never list three items like "A, B, and C").
-   - Do not use perfect appositive phrases. Instead of "Shah Jahan, the Mughal emperor...", say "this emperor shah jahan..." or "shah jahan (the emperor guy)...".
-
-5. Typo Density:
-   - You must intentionally inject exactly 2 to 3 spelling mistakes per paragraph. Select from:
-     * definately (definitely)
-     * seperate (separate)
-     * recieve (receive)
-     * tottaly (totally)
-     * untill (until)
-     * becuase (because)
-     * beleive (believe)
-     * archetict (architect)
-     * beatiful (beautiful)
-     * goverment (government)
-     * wierd (weird)
-
-6. Personal Voice & Specificity:
-   - Write from a subjective student perspective. Use parenthetical asides like "(i think it was in 1631)" or "(our history teacher talked about this)".
-   - Make it sound like a person sharing their thoughts on a topic, not a neutral database.
-
-7. Strict Formatting Constraints:
-   - Absolutely NO bold formatting (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
-   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas or parentheses instead.
+4. Structure & Punctuation Constraints:
+   - Use 1-2 parenthetical remarks to show a student's side thoughts (e.g., "(i think it was in 1631 or something)" or "(our history teacher talked about this)").
+   - Never use triads or lists of three items (avoid "A, B, and C").
+   - Absolutely NO bold formatting is allowed (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
+   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas or split sentences.
 
 OUTPUT REQUIREMENT:
 Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
