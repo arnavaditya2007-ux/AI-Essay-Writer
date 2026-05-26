@@ -115,26 +115,11 @@ generateBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write the essay, perform a two-step internal generation process to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero):
-
-STAGE 1: DRAFTING
-Draft the essay according to the user's constraints (topic, tone, level, paragraphs, avoid topics, outline).
-
-STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
-Thoroughly review and rewrite the entire draft to completely strip out all AI-generated markers. You must actively apply these humanizing modifications:
-- Ditch the "Over-Polished" tone: Never make the text sound like a polished, elegant textbook. AI detectors flag elegant, academic phrasing. Humans write with slightly raw, direct, and casual vocabulary.
-- Prefer simple verbs & phrases over complex ones: Use simple descriptions (e.g., write "constructed" or "built" instead of "commissioned", "ended with" instead of "culminated in", "totally devastated" or "crushed" instead of "utterly heartbroken", "finished" instead of "wrapping up", "stands" instead of "stands proudly").
-- Break up the sentence length pattern: Ensure extreme sentence length variation (burstiness). Some sentences must be very short and punchy (3-8 words), followed by longer, descriptive ones. Avoid uniform sentence lengths.
-- Inject human phrasing: Use contractions naturally (don't, can't, it's, they're, we've, should've). Start sentences with conjunctions (But, And, So, Yet, Or) where it fits the flow.
-- Use natural human punctuation: Use parentheses or commas to mimic a natural human train of thought. Absolutely do NOT use any em-dashes (—) or double hyphens (--) in the text.
-- Ban all bold formatting: Never format any words or phrases in bold. Do not use <strong> or <b> tags, and do not use markdown double asterisks (**). All paragraph content must be standard weight.
-- Ban AI signature transitions: Never use "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
-- Ban clichéd AI vocab: Never use phrases like "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "stands today", "belies a story", "represents a culmination".
-- Create a realistic human voice: Write like a passionate human writer who values logic and engaging storytelling, rather than a neutral, robotic database assistant. Keep phrasing slightly imperfect and down-to-earth.
-- Use clear, simple grammar: Write in easy, clear grammar that any reader can understand without effort. Use simple, everyday words. Avoid unnecessarily complex vocabulary or jargon.
-
-OUTPUT REQUIREMENT:
-Only output the final, fully humanized STAGE 2 essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, stages labels, or explanations. Start directly with the <h2> tag.`
+                        content: `You are an AI essay writer. Write a complete, well-structured essay based on the topic and options.
+Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
+Do NOT include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
+Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything must be standard weight.
+Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`
                     },
                     { role: 'user', content: prompt }
                 ]
@@ -169,6 +154,14 @@ Only output the final, fully humanized STAGE 2 essay formatted directly as HTML 
             }
 
             essayOutput.innerHTML = html;
+            
+            // Reset Humanize Button for the new essay
+            humanizeBtn.disabled = false;
+            humanizeBtn.innerHTML = `
+                <i data-lucide="wand-2"></i>
+                <span>Humanize</span>
+            `;
+            lucide.createIcons();
         } else {
             const msg = 'No content was returned. Please try again with a different topic.';
             essayOutput.innerHTML = `<p style="color: #ef4444;">${msg}</p>`;
@@ -185,6 +178,124 @@ Only output the final, fully humanized STAGE 2 essay formatted directly as HTML 
             <i data-lucide="sparkles"></i>
         `;
         lucide.createIcons();
+    }
+});
+
+// Humanize Action
+humanizeBtn.addEventListener('click', async () => {
+    if (isGenerating) return;
+    
+    const currentEssay = essayOutput.innerHTML.trim();
+    if (!currentEssay || currentEssay.includes('Structuring essay') || currentEssay.includes('API Error')) {
+        alert('Please generate an essay first before humanizing.');
+        return;
+    }
+
+    try {
+        isGenerating = true;
+        humanizeBtn.disabled = true;
+        humanizeBtn.innerHTML = `
+            <span>Humanizing</span>
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        
+        // Show in-progress message in output
+        essayOutput.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Humanizing text to bypass AI detectors...</p>';
+
+        const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                max_tokens: 8192,
+                messages: [
+                    {
+                        role: 'system',
+                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero):
+
+STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these humanizing modifications:
+- Ditch the "Over-Polished" tone: Never make the text sound like a polished, elegant textbook. AI detectors flag elegant, academic phrasing. Humans write with slightly raw, direct, and casual vocabulary.
+- Prefer simple verbs & phrases over complex ones: Use simple descriptions (e.g., write "constructed" or "built" instead of "commissioned", "ended with" instead of "culminated in", "totally devastated" or "crushed" instead of "utterly heartbroken", "finished" instead of "wrapping up", "stands" instead of "stands proudly").
+- Break up the sentence length pattern: Ensure extreme sentence length variation (burstiness). Some sentences must be very short and punchy (3-8 words), followed by longer, descriptive ones. Avoid uniform sentence lengths.
+- Inject human phrasing: Use contractions naturally (don't, can't, it's, they're, we've, should've). Start sentences with conjunctions (But, And, So, Yet, Or) where it fits the flow.
+- Use natural human punctuation: Use parentheses or commas to mimic a natural human train of thought. Absolutely do NOT use any em-dashes (—) or double hyphens (--) in the text.
+- Ban all bold formatting: Never format any words or phrases in bold. Do not use <strong> or <b> tags, and do not use markdown double asterisks (**). All paragraph content must be standard weight.
+- Ban AI signature transitions: Never use "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
+- Ban clichéd AI vocab: Never use phrases like "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "stands today", "belies a story", "represents a culmination".
+- Create a realistic human voice: Write like a passionate human writer who values logic and engaging storytelling, rather than a neutral, robotic database assistant. Keep phrasing slightly imperfect and down-to-earth.
+- Use clear, simple grammar: Write in easy, clear grammar that any reader can understand without effort. Use simple, everyday words. Avoid unnecessarily complex vocabulary or jargon.
+
+OUTPUT REQUIREMENT:
+Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
+                    },
+                    {
+                        role: 'user',
+                        content: `Please rewrite the following essay to fully humanize it according to the system instructions. Do not change the general topic or arguments, but completely rephrase the sentences and vocabulary to ensure it sounds like a human and bypasses all AI detectors. Maintain the paragraph breaks and format directly as HTML.
+
+Essay:
+${currentEssay}`
+                    }
+                ]
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const errMsg = data?.error?.message || `API error (HTTP ${response.status})`;
+            essayOutput.innerHTML = currentEssay; // Restore original essay
+            alert(`Humanizer Error: ${errMsg}`);
+            return;
+        }
+
+        if (data.choices && data.choices[0]?.message?.content) {
+            let html = data.choices[0].message.content.trim();
+
+            // Clean up any markdown code wrapper that the model sometimes outputs
+            html = html.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
+                       .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
+            
+            // If the model left an unclosed code block at the start, clean it up
+            if (html.startsWith('```html')) {
+                html = html.replace(/^```html\s*/, '');
+            } else if (html.startsWith('```')) {
+                html = html.replace(/^```\s*/, '');
+            }
+            // Remove any trailing unclosed code block indicators
+            if (html.endsWith('```')) {
+                html = html.replace(/\s*```$/, '');
+            }
+
+            essayOutput.innerHTML = html;
+            
+            // Change button state to Completed
+            humanizeBtn.disabled = true;
+            humanizeBtn.innerHTML = `
+                <i data-lucide="check"></i>
+                <span>Humanized!</span>
+            `;
+            lucide.createIcons();
+        } else {
+            essayOutput.innerHTML = currentEssay; // Restore original
+            alert('No humanized content was returned. Please try again.');
+        }
+    } catch (err) {
+        essayOutput.innerHTML = currentEssay; // Restore original
+        alert('A network error occurred during humanization. Please try again.');
+        console.error('Humanizer Network error:', err);
+    } finally {
+        isGenerating = false;
+        if (humanizeBtn.innerHTML.includes('Humanizing')) {
+            // If failed and not disabled-success, restore original button text
+            humanizeBtn.disabled = false;
+            humanizeBtn.innerHTML = `
+                <i data-lucide="wand-2"></i>
+                <span>Humanize</span>
+            `;
+            lucide.createIcons();
+        }
     }
 });
 

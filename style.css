@@ -343,7 +343,12 @@ body.light-theme::-webkit-scrollbar-thumb:hover,
     color: var(--text-primary);
 }
 
-.btn-copy {
+.output-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
@@ -358,9 +363,27 @@ body.light-theme::-webkit-scrollbar-thumb:hover,
     transition: all 0.2s ease;
 }
 
-.btn-copy:hover {
+.btn-action:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
+}
+
+.btn-humanize {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-humanize:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.btn-humanize:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--border-color);
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .essay-viewport {

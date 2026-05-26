@@ -100,10 +100,16 @@
             <section class="card output-card hidden" id="outputCard">
                 <div class="output-header">
                     <h2>Generated Essay</h2>
-                    <button class="btn-copy" id="copyBtn" title="Copy to Clipboard">
-                        <i data-lucide="copy"></i>
-                        <span>Copy</span>
-                    </button>
+                    <div class="output-actions">
+                        <button class="btn-action btn-humanize" id="humanizeBtn" title="Humanize Essay to Bypass AI Detectors">
+                            <i data-lucide="wand-2"></i>
+                            <span>Humanize</span>
+                        </button>
+                        <button class="btn-action btn-copy" id="copyBtn" title="Copy to Clipboard">
+                            <i data-lucide="copy"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="essay-viewport" id="essayOutput"></div>
             </section>
