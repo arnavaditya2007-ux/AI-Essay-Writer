@@ -885,6 +885,64 @@ body.light-theme .step-card, body.light-theme .advantage-card {
 
 /* Responsiveness */
 @media (max-width: 600px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .app-wrapper {
+        gap: 24px;
+    }
+
+    .logo span {
+        font-size: 32px;
+    }
+
+    .logo i, .logo svg {
+        width: 44px;
+        height: 44px;
+    }
+
+    .main-title {
+        font-size: 22px;
+        margin: 16px 0 8px;
+    }
+
+    .card {
+        padding: 20px 16px;
+        border-radius: var(--radius-md);
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-bottom: 10px;
+    }
+    
+    .form-row .form-group {
+        grid-column: auto !important;
+    }
+
+    .essay-viewport {
+        padding: 16px;
+        font-size: 14.5px;
+    }
+
+    .btn-donate-float {
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .btn-donate-float i {
+        width: 20px;
+        height: 20px;
+    }
+
     .info-grid {
         grid-template-columns: 1fr;
         gap: 16px;
@@ -899,14 +957,6 @@ body.light-theme .step-card, body.light-theme .advantage-card {
     .adv-1 { grid-column: 1; grid-row: 6; }
     .adv-2 { grid-column: 1; grid-row: 7; }
     .adv-3 { grid-column: 1; grid-row: 8; }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-row .form-group {
-        grid-column: auto !important;
-    }
     
     .donation-content {
         flex-direction: column;
