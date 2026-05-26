@@ -204,7 +204,7 @@ Absolutely NO long dashes or em-dashes (— or --) are allowed. Use commas or sp
                     { role: 'user', content: prompt }
                 ]
             })
-        }, 25000, 1, generateBtn, "Writing Essay");
+        }, 30000, 1, generateBtn, "Writing Essay");
 
         const data = await response.json();
 
@@ -237,7 +237,7 @@ CRITICAL: The previous attempt failed because you did not write the body paragra
                                 { role: 'user', content: prompt + "\n\nCRITICAL: You MUST write the full essay body paragraphs. Do not stop after writing the title. Output the title (<h2>) and all paragraphs (<p>)." }
                             ]
                         })
-                    }, 25000, 1, generateBtn, "Writing Essay");
+                    }, 30000, 1, generateBtn, "Writing Essay");
                     const retryData = await retryResponse.json();
                     if (retryResponse.ok && retryData.choices && retryData.choices[0]?.message?.content) {
                         html = cleanHtml(retryData.choices[0].message.content);
@@ -363,7 +363,7 @@ ${currentEssay}`
                     }
                 ]
             })
-        }, 25000, 1, humanizeBtn, "Humanizing");
+        }, 30000, 1, humanizeBtn, "Humanizing");
 
         const data = await response.json();
 
