@@ -1045,7 +1045,8 @@ body.light-theme .step-card, body.light-theme .advantage-card {
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 14px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    word-spacing: 0.06em;
 }
 
 .thankyou-sub {
@@ -1053,7 +1054,8 @@ body.light-theme .step-card, body.light-theme .advantage-card {
     color: var(--text-secondary);
     max-width: 540px;
     margin: 0 auto 10px;
-    line-height: 1.7;
+    line-height: 1.75;
+    word-spacing: 0.05em;
 }
 
 .thankyou-note {
@@ -1061,8 +1063,8 @@ body.light-theme .step-card, body.light-theme .advantage-card {
     color: var(--text-secondary);
     max-width: 480px;
     margin: 0 auto 32px;
-    line-height: 1.65;
-    opacity: 0.8;
+    line-height: 1.7;
+    word-spacing: 0.05em;
 }
 
 /* Badge links row */
@@ -1135,7 +1137,7 @@ body.light-theme .step-card, body.light-theme .advantage-card {
 .thankyou-footer {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    opacity: 0.6;
+    word-spacing: 0.04em;
 }
 
 .thankyou-footer strong {
@@ -1158,15 +1160,42 @@ body.light-theme .thankyou-icon svg {
     fill: rgba(0, 0, 0, 0.05);
 }
 
+body.light-theme .thankyou-title {
+    color: var(--text-primary);
+}
+
+body.light-theme .thankyou-sub,
+body.light-theme .thankyou-note {
+    color: var(--text-secondary);
+}
+
+body.light-theme .thankyou-footer {
+    color: var(--text-secondary);
+}
+
+body.light-theme .thankyou-footer strong {
+    color: var(--text-primary);
+}
+
 body.light-theme .ty-badge {
     background: rgba(255, 255, 255, 0.8);
+    color: var(--text-primary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+body.light-theme .ty-badge svg {
+    stroke: var(--text-secondary);
 }
 
 body.light-theme .ty-badge:hover {
     background: rgba(0, 0, 0, 0.04);
     border-color: rgba(0, 0, 0, 0.2);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+}
+
+body.light-theme .ty-badge:hover svg {
+    stroke: var(--text-primary);
 }
 
 /* Mobile */
