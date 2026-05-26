@@ -19,59 +19,38 @@ const API_ENDPOINT = (window.location.hostname === 'localhost' || window.locatio
     ? 'https://ai-essay-writer-blue.vercel.app/api/generate'
     : '/api/generate';
 
-// Fetch helper with 15s timeout, automatic retry, and visual countdown button rendering
-const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, maxRetries = 1, buttonElement = null, loadingText = "Loading") => {
-    let retries = 0;
-    while (retries <= maxRetries) {
-        const controller = new AbortController();
-        let secondsLeft = Math.round(timeoutMs / 1000);
-        let timerId = null;
+// Fetch helper with visual countdown. Timer resets to 30s if it reaches 0 — no backend abort or retry.
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 30000, buttonElement = null, loadingText = "Loading") => {
+    let secondsLeft = Math.round(timeoutMs / 1000);
+    let timerId = null;
 
-        if (buttonElement) {
+    if (buttonElement) {
+        buttonElement.innerHTML = `
+            <span>${loadingText} (${secondsLeft}s)</span>
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        timerId = setInterval(() => {
+            secondsLeft--;
+            // When countdown hits 0 just loop back to 30 — backend keeps running
+            if (secondsLeft <= 0) secondsLeft = Math.round(timeoutMs / 1000);
             buttonElement.innerHTML = `
                 <span>${loadingText} (${secondsLeft}s)</span>
                 <div class="loading-dots">
                     <span></span><span></span><span></span>
                 </div>
             `;
-            timerId = setInterval(() => {
-                secondsLeft--;
-                if (secondsLeft >= 0) {
-                    buttonElement.innerHTML = `
-                        <span>${loadingText} (${secondsLeft}s)</span>
-                        <div class="loading-dots">
-                            <span></span><span></span><span></span>
-                        </div>
-                    `;
-                }
-            }, 1000);
-        }
+        }, 1000);
+    }
 
-        const timeoutId = setTimeout(() => {
-            console.warn(`Request timed out after ${timeoutMs}ms. Aborting...`);
-            if (timerId) clearInterval(timerId);
-            controller.abort();
-        }, timeoutMs);
-
-        try {
-            const response = await fetch(url, {
-                ...options,
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
-            if (timerId) clearInterval(timerId);
-            return response;
-        } catch (err) {
-            clearTimeout(timeoutId);
-            if (timerId) clearInterval(timerId);
-            const isTimeout = err.name === 'AbortError' || err.message?.includes('timeout');
-            if (isTimeout && retries < maxRetries) {
-                retries++;
-                console.warn(`Attempt ${retries} timed out. Retrying fresh attempt...`);
-                continue;
-            }
-            throw err;
-        }
+    try {
+        const response = await fetch(url, options);
+        if (timerId) clearInterval(timerId);
+        return response;
+    } catch (err) {
+        if (timerId) clearInterval(timerId);
+        throw err;
     }
 };
 
@@ -204,7 +183,7 @@ Absolutely NO long dashes or em-dashes (— or --) are allowed. Use commas or sp
                     { role: 'user', content: prompt }
                 ]
             })
-        }, 30000, 1, generateBtn, "Writing Essay");
+        }, 30000, generateBtn, "Writing Essay");
 
         const data = await response.json();
 
@@ -237,7 +216,7 @@ CRITICAL: The previous attempt failed because you did not write the body paragra
                                 { role: 'user', content: prompt + "\n\nCRITICAL: You MUST write the full essay body paragraphs. Do not stop after writing the title. Output the title (<h2>) and all paragraphs (<p>)." }
                             ]
                         })
-                    }, 30000, 1, generateBtn, "Writing Essay");
+                    }, 30000, generateBtn, "Writing Essay");
                     const retryData = await retryResponse.json();
                     if (retryResponse.ok && retryData.choices && retryData.choices[0]?.message?.content) {
                         html = cleanHtml(retryData.choices[0].message.content);
@@ -363,7 +342,7 @@ ${currentEssay}`
                     }
                 ]
             })
-        }, 30000, 1, humanizeBtn, "Humanizing");
+        }, 30000, humanizeBtn, "Humanizing");
 
         const data = await response.json();
 
