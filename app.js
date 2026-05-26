@@ -74,6 +74,9 @@ topicInput.addEventListener('input', () => {
     });
 });
 
+// Inject current year into footer
+const yearEl = document.getElementById('currentYear');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // Theme Switcher Logic
 const currentTheme = localStorage.getItem('theme');

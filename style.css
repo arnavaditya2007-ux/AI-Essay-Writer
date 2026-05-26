@@ -980,4 +980,182 @@ body.light-theme .step-card, body.light-theme .advantage-card {
 
 
 
+/* ===================== Thank You Section ===================== */
+.thankyou-section {
+    position: relative;
+    text-align: center;
+    padding: 56px 32px 48px;
+    border-radius: var(--radius-lg);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+}
+
+/* Soft ambient glow blob behind content */
+.thankyou-glow {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, rgba(255, 80, 120, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.thankyou-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Heart icon */
+.thankyou-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 80, 120, 0.12);
+    border: 1px solid rgba(255, 80, 120, 0.25);
+    margin-bottom: 20px;
+    animation: heartbeat 2.4s ease-in-out infinite;
+}
+
+.thankyou-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: #ff5078;
+    fill: rgba(255, 80, 120, 0.2);
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14%       { transform: scale(1.12); }
+    28%       { transform: scale(1); }
+    42%       { transform: scale(1.08); }
+    56%       { transform: scale(1); }
+}
+
+.thankyou-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+}
+
+.thankyou-sub {
+    font-size: 0.975rem;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin: 0 auto 10px;
+    line-height: 1.7;
+}
+
+.thankyou-note {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.65;
+    opacity: 0.8;
+}
+
+/* Badge links row */
+.thankyou-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+}
+
+.ty-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ty-badge svg {
+    width: 16px;
+    height: 16px;
+}
+
+.ty-badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.ty-github:hover  { border-color: rgba(255,255,255,0.3); }
+.ty-donate:hover  { border-color: rgba(255, 80, 120, 0.5); color: #ff5078; }
+.ty-donate:hover svg { stroke: #ff5078; }
+.ty-bug:hover     { border-color: rgba(250, 200, 50, 0.5); color: #fac832; }
+.ty-bug:hover svg { stroke: #fac832; }
+
+/* Decorative divider */
+.thankyou-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 auto 24px;
+    max-width: 280px;
+}
+
+.thankyou-divider span {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.thankyou-divider svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--text-secondary);
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+/* Footer line */
+.thankyou-footer {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.thankyou-footer strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* Light theme tweaks */
+body.light-theme .thankyou-glow {
+    background: radial-gradient(ellipse at center, rgba(255, 80, 120, 0.08) 0%, transparent 70%);
+}
+
+body.light-theme .ty-badge {
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .thankyou-section { padding: 40px 20px 36px; }
+    .thankyou-title   { font-size: 1.4rem; }
+    .ty-badge         { padding: 9px 16px; font-size: 0.82rem; }
+}
 
