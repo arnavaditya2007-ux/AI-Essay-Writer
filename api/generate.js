@@ -1,87 +1,83 @@
-module.exports = async function handler(req, res) {
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+// Vercel Edge Runtime — 30s execution limit (vs 10s for serverless on Hobby plan)
+export const config = { runtime: 'edge' };
 
+const CORS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+function json(data, status = 200) {
+    return new Response(JSON.stringify(data), {
+        status,
+        headers: { ...CORS, 'Content-Type': 'application/json' },
+    });
+}
+
+export default async function handler(req) {
     if (req.method === 'OPTIONS') {
-        return res.status(200).end();
+        return new Response(null, { status: 200, headers: CORS });
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return json({ error: 'Method not allowed' }, 405);
     }
 
-    const { messages, max_tokens } = req.body;
+    let body;
+    try {
+        body = await req.json();
+    } catch {
+        return json({ error: 'Invalid JSON body' }, 400);
+    }
+
+    const { messages, max_tokens } = body;
 
     if (!messages || !Array.isArray(messages)) {
-        return res.status(400).json({ error: 'Invalid request body' });
+        return json({ error: 'Invalid request body' }, 400);
     }
 
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s — safely within Vercel's 60s limit
-
-        let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const callOpenRouter = async (model) => {
+        return fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
+                'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             },
             body: JSON.stringify({
-                model: process.env.MODEL_ID || 'google/gemini-2.5-flash',
+                model,
                 max_tokens: max_tokens || 8192,
-                messages
+                messages,
             }),
-            signal: controller.signal
         });
+    };
 
-        clearTimeout(timeoutId);
-
+    try {
+        const primaryModel = process.env.MODEL_ID || 'google/gemini-2.5-flash';
+        let response = await callOpenRouter(primaryModel);
         let data = await response.json();
 
-        // If the account has insufficient balance (HTTP 402), attempt to use a higher Gemini model fallback
+        // On 402 (insufficient credits) try fallback models
         if (response.status === 402) {
-            console.log("Detecting 402 Payment Required. Trying higher Gemini model fallback...");
-            const fallbackModels = [
-                'google/gemini-2.5-pro',
-                'google/gemini-2.5-flash-lite'
-            ];
-
-            for (const fallbackModel of fallbackModels) {
+            const fallbacks = ['google/gemini-2.5-flash-lite', 'google/gemini-2.0-flash-001'];
+            for (const model of fallbacks) {
                 try {
-                    const fallbackResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
-                        },
-                        body: JSON.stringify({
-                            model: fallbackModel,
-                            max_tokens: max_tokens || 8192,
-                            messages
-                        })
-                    });
-
-                    const fallbackData = await fallbackResponse.json();
-                    if (fallbackResponse.ok) {
-                        return res.status(200).json(fallbackData);
-                    } else {
-                        console.error(`Fallback to ${fallbackModel} failed:`, fallbackData);
-                    }
-                } catch (fallbackErr) {
-                    console.error(`Error during fallback to ${fallbackModel}:`, fallbackErr);
+                    const fb = await callOpenRouter(model);
+                    const fbData = await fb.json();
+                    if (fb.ok) return json(fbData);
+                    console.error(`Fallback ${model} failed:`, fbData);
+                } catch (e) {
+                    console.error(`Error during fallback to ${model}:`, e);
                 }
             }
         }
 
         if (!response.ok) {
-            return res.status(response.status).json({ error: data?.error?.message || 'API error' });
+            return json({ error: data?.error?.message || 'API error' }, response.status);
         }
 
-        return res.status(200).json(data);
+        return json(data);
     } catch (err) {
-        console.error('Proxy error:', err);
-        return res.status(500).json({ error: 'Internal server error: ' + err.message });
+        console.error('Edge proxy error:', err);
+        return json({ error: 'Internal server error: ' + err.message }, 500);
     }
-};
+}
