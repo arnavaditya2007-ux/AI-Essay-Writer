@@ -13,12 +13,67 @@ const essayOutput = document.getElementById('essayOutput');
 const copyBtn = document.getElementById('copyBtn');
 const themeToggle = document.getElementById('themeToggle');
 
-// Config — API key and model are stored securely on the server (see api/generate.js on Vercel)
 const API_ENDPOINT = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? '/api/generate'
     : (window.location.protocol === 'file:' || window.location.hostname.endsWith('github.io'))
     ? 'https://ai-essay-writer-blue.vercel.app/api/generate'
     : '/api/generate';
+
+// Fetch helper with 15s timeout, automatic retry, and visual countdown button rendering
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, maxRetries = 1, buttonElement = null, loadingText = "Loading") => {
+    let retries = 0;
+    while (retries <= maxRetries) {
+        const controller = new AbortController();
+        let secondsLeft = Math.round(timeoutMs / 1000);
+        let timerId = null;
+
+        if (buttonElement) {
+            buttonElement.innerHTML = `
+                <span>${loadingText} (${secondsLeft}s)</span>
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            timerId = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft >= 0) {
+                    buttonElement.innerHTML = `
+                        <span>${loadingText} (${secondsLeft}s)</span>
+                        <div class="loading-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    `;
+                }
+            }, 1000);
+        }
+
+        const timeoutId = setTimeout(() => {
+            console.warn(`Request timed out after ${timeoutMs}ms. Aborting...`);
+            if (timerId) clearInterval(timerId);
+            controller.abort();
+        }, timeoutMs);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (timerId) clearInterval(timerId);
+            return response;
+        } catch (err) {
+            clearTimeout(timeoutId);
+            if (timerId) clearInterval(timerId);
+            const isTimeout = err.name === 'AbortError' || err.message?.includes('timeout');
+            if (isTimeout && retries < maxRetries) {
+                retries++;
+                console.warn(`Attempt ${retries} timed out. Retrying fresh attempt...`);
+                continue;
+            }
+            throw err;
+        }
+    }
+};
 
 let isGenerating = false;
 
@@ -88,26 +143,51 @@ generateBtn.addEventListener('click', async () => {
         essayOutput.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Structuring essay and gathering context...</p>';
         outputCard.scrollIntoView({ behavior: 'smooth' });
 
-        const prompt = `Write a complete, fully-formed essay based on the topic: "${topic}". 
-                        Tone: "${toneSelect.value}". 
-                        Writing Level / Audience: "${levelSelect.value}" (Controls depth of vocabulary, sentence complexity, and assumed prior knowledge).
-                        Target Length: "${lengthSelect.value}".
-                        Required Paragraphs: "${paragraphsSelect.value}".
-                        ${avoidInput.value.trim() ? `Avoid Topics: "${avoidInput.value.trim()}" (Strictly avoid referencing or mentioning these topics).` : ''}
+        const numParagraphs = parseInt(paragraphsSelect.value) || 5;
+        let totalWordTarget = 1000;
+        const lengthVal = lengthSelect.value;
+        if (lengthVal.includes('500')) {
+            totalWordTarget = 500;
+        } else if (lengthVal.includes('1500')) {
+            totalWordTarget = 1500;
+        }
+        const wordsPerParagraph = Math.round(totalWordTarget / numParagraphs);
+
+        const prompt = `You MUST strictly follow these 6 user configuration rules:
+                        1. Topic: Write about the topic: "${topic}".
+                        2. Writing Tone: Adhere strictly to the "${toneSelect.value}" tone.
+                        3. Writing Level / Audience: Write exactly at the "${levelSelect.value}" level (this controls vocabulary difficulty, argument depth, and assumed knowledge).
+                        4. Target Length: Write approximately ${totalWordTarget} words in total.
+                        5. Required Paragraphs: Structure the essay into exactly ${numParagraphs} body paragraphs. Each paragraph MUST contain approximately ${wordsPerParagraph} words. Do NOT make paragraphs very short.
+                        6. Outline & Subheadings: ${subheadingsInput.value.trim() ? `You must structure the essay according to this outline: "${subheadingsInput.value.trim()}". Transition between these outline sections smoothly.` : 'Write a coherent, structured outline flow.'}
                         
+                        ${avoidInput.value.trim() ? `7. Avoid Topics (Optional Rule): Strictly avoid referencing or mentioning: "${avoidInput.value.trim()}".` : ''}
+
                         Heading/Title Requirement: You MUST start the essay with a single <h2> heading containing a creative, engaging title for the essay. Do NOT use any other <h2> tags or subheadings anywhere else in the essay.
-                        
-                        ${subheadingsInput.value.trim() ? `Outline/Structure Instructions: Use the following outline to guide the flow of your paragraphs: "${subheadingsInput.value.trim()}". However, do NOT write out these outline points as headings. Transition between these sections smoothly using plain paragraphs.` : ''}
                          
                         Formatting & Completion:
-                        1. Structure the essay beautifully so that it has exactly ${paragraphsSelect.value.split(' ')[0]} body paragraphs.
-                        2. Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
-                        3. Do not include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
-                        4. Ensure that the essay is fully completed. Do NOT cut off mid-sentence or mid-paragraph. All sentences must be fully completed and end with proper punctuation.
-                        5. Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything inside paragraphs must be standard weight.
-                        6. Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`;
+                        1. Structure the essay beautifully so that it has exactly ${numParagraphs} body paragraphs.
+                        2. Each paragraph MUST be robust and detailed, containing approximately ${wordsPerParagraph} words. The total word count of the entire essay MUST be approximately ${totalWordTarget} words. Do NOT generate very short paragraphs of only 30-50 words.
+                        3. Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
+                        4. Do not include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
+                        5. Ensure that the essay is fully completed. Do NOT cut off mid-sentence or mid-paragraph. All sentences must be fully completed and end with proper punctuation.
+                        6. Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything inside paragraphs must be standard weight.
+                        7. Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`;
 
-        const response = await fetch(API_ENDPOINT, {
+        const cleanHtml = (text) => {
+            let cleaned = text.trim();
+            cleaned = cleaned.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
+                             .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
+            if (cleaned.startsWith('```html')) {
+                cleaned = cleaned.replace(/^```html\s*/, '');
+            } else if (cleaned.startsWith('```')) {
+                cleaned = cleaned.replace(/^```\s*/, '');
+            }
+            if (cleaned.endsWith('```')) {
+                cleaned = cleaned.replace(/\s*```$/, '');
+            }
+            return cleaned.trim();
+        };        const response = await fetchWithTimeout(API_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -116,15 +196,15 @@ generateBtn.addEventListener('click', async () => {
                     {
                         role: 'system',
                         content: `You are an AI essay writer. Write a complete, well-structured essay based on the topic and options.
-Output the response formatted directly as HTML using <p> tags for all paragraphs and a single <h2> tag at the very beginning for the title.
-Do NOT include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
-Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything must be standard weight.
-Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`
+CRITICAL: You MUST write the entire essay including the title (in a single <h2> tag) and all body paragraphs (in separate <p> tags). Never stop after writing only the title.
+Output the response formatted directly as HTML. Do NOT include any markdown code block fences (like \`\`\`html) or metadata notes. Start directly with the <h2> tag.
+Absolutely NO bold text is allowed. Everything must be standard weight.
+Absolutely NO long dashes or em-dashes (— or --) are allowed. Use commas or split into separate sentences.`
                     },
                     { role: 'user', content: prompt }
                 ]
             })
-        });
+        }, 25000, 1, generateBtn, "Writing Essay");
 
         const data = await response.json();
 
@@ -136,21 +216,35 @@ Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text
         }
 
         if (data.choices && data.choices[0]?.message?.content) {
-            let html = data.choices[0].message.content.trim();
+            let html = cleanHtml(data.choices[0].message.content);
 
-            // Clean up any markdown code wrapper that the model sometimes outputs
-            html = html.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
-                       .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
-            
-            // If the model left an unclosed code block at the start, clean it up
-            if (html.startsWith('```html')) {
-                html = html.replace(/^```html\s*/, '');
-            } else if (html.startsWith('```')) {
-                html = html.replace(/^```\s*/, '');
-            }
-            // Remove any trailing unclosed code block indicators
-            if (html.endsWith('```')) {
-                html = html.replace(/\s*```$/, '');
+            // Auto-retry once if no <p> tags are present (title-only or empty body generation)
+            if (!html.includes('<p>')) {
+                console.warn("Only title or empty body generated. Attempting auto-retry...");
+                essayOutput.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Title generated. Adding body paragraphs (retrying)...</p>';
+                try {
+                    const retryResponse = await fetchWithTimeout(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            max_tokens: 8192,
+                            messages: [
+                                {
+                                    role: 'system',
+                                    content: `You are an AI essay writer. Write a complete, well-structured essay based on the topic and options.
+CRITICAL: The previous attempt failed because you did not write the body paragraphs. You MUST output the title AND all requested body paragraphs. Do not output only the title. Format directly as HTML.`
+                                },
+                                { role: 'user', content: prompt + "\n\nCRITICAL: You MUST write the full essay body paragraphs. Do not stop after writing the title. Output the title (<h2>) and all paragraphs (<p>)." }
+                            ]
+                        })
+                    }, 25000, 1, generateBtn, "Writing Essay");
+                    const retryData = await retryResponse.json();
+                    if (retryResponse.ok && retryData.choices && retryData.choices[0]?.message?.content) {
+                        html = cleanHtml(retryData.choices[0].message.content);
+                    }
+                } catch (retryErr) {
+                    console.error('Retry failed:', retryErr);
+                }
             }
 
             essayOutput.innerHTML = html;
@@ -181,7 +275,6 @@ Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text
     }
 });
 
-// Humanize Action
 humanizeBtn.addEventListener('click', async () => {
     if (isGenerating) return;
     
@@ -190,6 +283,14 @@ humanizeBtn.addEventListener('click', async () => {
         alert('Please generate an essay first before humanizing.');
         return;
     }
+
+    // Parse original paragraph count and word count
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = currentEssay;
+    const paragraphCount = tempDiv.querySelectorAll('p').length || 5;
+    
+    const cleanText = currentEssay.replace(/<[^>]*>/g, ' ');
+    const originalWordCount = cleanText.trim().split(/\s+/).filter(Boolean).length || 500;
 
     try {
         isGenerating = true;
@@ -204,7 +305,7 @@ humanizeBtn.addEventListener('click', async () => {
         // Show in-progress message in output
         essayOutput.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Humanizing text to bypass AI detectors...</p>';
 
-        const response = await fetch(API_ENDPOINT, {
+        const response = await fetchWithTimeout(API_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -228,13 +329,19 @@ Thoroughly review and rewrite the provided essay to completely strip out all AI-
    - Sentence Length Cap: No sentence may exceed 15 words. Break up long clauses into short, abrupt sentences.
    - No Apostrophes in Contractions: All contractions MUST be written without apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "arent"). Real students typing quickly omit these, and it is a major perplexity signal.
    - Lowercase "i": The standalone pronoun "i" MUST always be lowercase "i".
-   - Inconsistent Capitalization: Occasionally write proper nouns in lowercase (e.g., write "india", "agra", "taj mahal", "shah jahan" in lowercase).
+   - Capitalization Rules: The first letter of every single sentence and the first letter of every single paragraph MUST always be capitalized. Never start a sentence or a paragraph with a lowercase letter (for example, never start a sentence or paragraph with a lowercase 't' like 'the 17th century...', it MUST be capitalized as 'The 17th century...').
+   - Inconsistent Capitalization: Occasionally write proper nouns in lowercase (e.g., write "india", "agra", "taj mahal", "shah jahan" in lowercase). However, if a proper noun is the very first word of a sentence, it MUST start with a capital letter.
 
 3. Typo Density & Errors:
-   - You MUST inject exactly 2 to 3 spelling typos per paragraph. Choose from: "definately" (definitely), "seperate" (separate), "becuase" (because), "recieve" (receive), "beleive" (believe), "archetict" (architect), "beatiful" (beautiful), "tottaly" (totally), "untill" (until).
+   - You MUST inject exactly 2 to 3 spelling typos per paragraph.
+   - These typos MUST only be in LONG, complex words (never in short/basic words).
+   - Examples of allowed long-word typos to choose from: "definately" (definitely), "seperate" (separate), "goverment" (government), "enviroment" (environment), "beatiful" (beautiful), "neccesary" (necessary), "diferent" (different), "succesful" (successful), "begining" (beginning), "unnecesary" (unnecessary), "independant" (independent).
+   - Never misspell short words (do NOT write "becuase" or "untill"). Keep all short words spelled correctly.
    - Use comma splices (joining two complete thoughts with just a comma, e.g., "they finished it in 1653, it took a long time").
 
 4. Structure & Punctuation Constraints:
+   - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them into one or change the paragraph count under any circumstances. Keep the paragraph breaks exactly where they were in the original.
+   - Word Count & Detail Preservation: The humanized essay MUST preserve the length, detail, and arguments of the original essay. Do not summarize, shorten, or simplify it. The total word count of your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words (the input has exactly ${originalWordCount} words).
    - Use 1-2 parenthetical remarks to show a student's side thoughts (e.g., "(i think it was in 1631 or something)" or "(our history teacher talked about this)").
    - Never use triads or lists of three items (avoid "A, B, and C").
    - Absolutely NO bold formatting is allowed (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
@@ -245,14 +352,18 @@ Only output the final, fully humanized essay formatted directly as HTML (<h2> fo
                     },
                     {
                         role: 'user',
-                        content: `Please rewrite the following essay to fully humanize it according to the system instructions. Do not change the general topic or arguments, but completely rephrase the sentences and vocabulary to ensure it sounds like a human and bypasses all AI detectors. Maintain the paragraph breaks and format directly as HTML.
+                        content: `Please rewrite the following essay to fully humanize it according to the system instructions. Do not change the general topic or arguments, but completely rephrase the sentences and vocabulary to ensure it sounds like a human and bypasses all AI detectors.
+
+Paragraph count constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Maintain the original paragraph structure and transitions, just rephrase the contents. Do not merge them.
+
+Word count constraint: Your humanized output MUST contain between ${originalWordCount - 15} and ${originalWordCount + 15} words (the input has exactly ${originalWordCount} words). Do not summarize or shorten any section.
 
 Essay:
 ${currentEssay}`
                     }
                 ]
             })
-        });
+        }, 25000, 1, humanizeBtn, "Humanizing");
 
         const data = await response.json();
 
@@ -264,22 +375,7 @@ ${currentEssay}`
         }
 
         if (data.choices && data.choices[0]?.message?.content) {
-            let html = data.choices[0].message.content.trim();
-
-            // Clean up any markdown code wrapper that the model sometimes outputs
-            html = html.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
-                       .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
-            
-            // If the model left an unclosed code block at the start, clean it up
-            if (html.startsWith('```html')) {
-                html = html.replace(/^```html\s*/, '');
-            } else if (html.startsWith('```')) {
-                html = html.replace(/^```\s*/, '');
-            }
-            // Remove any trailing unclosed code block indicators
-            if (html.endsWith('```')) {
-                html = html.replace(/\s*```$/, '');
-            }
+            let html = cleanHtml(data.choices[0].message.content);
 
             essayOutput.innerHTML = html;
             
@@ -300,8 +396,8 @@ ${currentEssay}`
         console.error('Humanizer Network error:', err);
     } finally {
         isGenerating = false;
-        if (humanizeBtn.innerHTML.includes('Humanizing')) {
-            // If failed and not disabled-success, restore original button text
+        // Only restore the button if we didn't successfully complete (success sets it to "Humanized!")
+        if (!humanizeBtn.innerHTML.includes('Humanized')) {
             humanizeBtn.disabled = false;
             humanizeBtn.innerHTML = `
                 <i data-lucide="wand-2"></i>
