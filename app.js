@@ -215,34 +215,52 @@ humanizeBtn.addEventListener('click', async () => {
                         content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student:
 
 STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these student-style humanizing modifications:
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict student-style humanizing modifications:
 
-1. Language Quality & Awkward Phrasing:
-   - Do NOT make the text sound like a polished, perfect textbook. Humans write with slightly raw, uneven sentences and awkward phrasing.
-   - Let the phrasing be slightly unpolished. Avoid elegant, perfectly symmetrical syntax.
+1. Banned AI Casual Fillers (STRICTLY PROHIBITED):
+   - You must NEVER use the following words or phrases. They are common AI signatures when trying to sound "casual":
+     * basically, honestly, literally, actually, essentially, simply
+     * super (e.g., "super famous"), really (e.g., "really cool"), very
+     * thing, stuff (e.g., "mausoleum thing", "architecture stuff")
+     * "and yeah", "so yeah", "but anyways"
+     * "testament to", "not only... but also", "delve", "tapestry", "unparalleled", "culmination", "worth noting"
+   - Instead of fillers, write with simple direct words or leave them out.
 
-2. Structure & Flow:
-   - Keep the structure less organized. Allow the writing to jump between ideas naturally, rather than having a rigid, formulaic flow.
-   - Use simple transitions (like "Also,", "Another thing is,", "Plus,", "But anyways,") instead of formal transitions (never use "Furthermore", "Moving on", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition").
+2. Apostrophe Stripping (MANDATORY FOR CONTRACTIONS):
+   - You MUST write all contractions WITHOUT apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "couldnt", "theyre", "isnt").
+   - Real students omit these all the time when typing quickly, and it is a massive signal of human text to AI detectors.
 
-3. Personal Voice & Opinions:
-   - Inject a natural personal voice, opinions, or emotional tone. E.g., use phrases like "I think", "honestly", "personally", "in my opinion", "to be fair", "which is pretty crazy".
-   - Make it sound like a student sharing their thoughts, not a neutral robotic database.
+3. Lowercase Standalone "i" & Inconsistent Capitalization:
+   - The standalone pronoun "i" MUST always be lowercase "i". E.g., "i think", "i mean", "what i learned".
+   - Occasionally leave proper nouns in lowercase (e.g., write "taj mahal" instead of "Taj Mahal", "india" instead of "India", "shah jahan" instead of "Shah Jahan").
 
-4. Specificity & Evidence:
-   - Instead of broad, safe statements, include specific examples. Write as if referencing classroom discussions, teacher explanations, personal understanding, or class notes (e.g. "like we learned in class," "our teacher mentioned that," "from what I understand,").
+4. Sentence Length and Structure:
+   - Cap sentence length strictly. No sentence may exceed 15 words. Break up long compound thoughts into short, abrupt sentences.
+   - Use comma splices to join thoughts (e.g., "they worked on it for like 20 years, it took forever").
+   - Avoid triads/lists (never list three items like "A, B, and C").
+   - Do not use perfect appositive phrases. Instead of "Shah Jahan, the Mughal emperor...", say "this emperor shah jahan..." or "shah jahan (the emperor guy)...".
 
-5. Simpler Vocabulary & Repetition:
-   - Use simpler vocabulary mixed with common informal student expressions. Avoid advanced academic words. Replace words like "culminated", "testament", "tapestry", "unparalleled", "moreover", "nevertheless" with basic terms ("basically", "mostly", "ended up", "really cool", "stuff", "things").
-   - Allow slight natural repetition of simple words or ideas (e.g. repeating "huge" or "important" rather than using complex synonyms), reflecting a student's natural vocabulary.
+5. Typo Density:
+   - You must intentionally inject exactly 2 to 3 spelling mistakes per paragraph. Select from:
+     * definately (definitely)
+     * seperate (separate)
+     * recieve (receive)
+     * tottaly (totally)
+     * untill (until)
+     * becuase (because)
+     * beleive (believe)
+     * archetict (architect)
+     * beatiful (beautiful)
+     * goverment (government)
+     * wierd (weird)
 
-6. Mistakes & Digits:
-   - Real students do not spell out numbers. Write all numbers as digits (e.g., "20" instead of "twenty", "1653" instead of "sixteen fifty-three", "10,000s" instead of "tens of thousands").
-   - Intentionally introduce exactly 2 to 3 minor human typos or punctuation slips across the entire essay to look authentic (e.g., write "definately" instead of "definitely", "seperate" instead of "separate", "its" instead of "it's" or vice versa, or write a sentence fragment).
+6. Personal Voice & Specificity:
+   - Write from a subjective student perspective. Use parenthetical asides like "(i think it was in 1631)" or "(our history teacher talked about this)".
+   - Make it sound like a person sharing their thoughts on a topic, not a neutral database.
 
-7. Formatting & Punctuation Constraints:
-   - Absolutely NO bold formatting is allowed (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
-   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas, parentheses, or split into separate sentences.
+7. Strict Formatting Constraints:
+   - Absolutely NO bold formatting (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
+   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas or parentheses instead.
 
 OUTPUT REQUIREMENT:
 Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
