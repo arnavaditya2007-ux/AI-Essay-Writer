@@ -13,8 +13,12 @@ const essayOutput = document.getElementById('essayOutput');
 const copyBtn = document.getElementById('copyBtn');
 const themeToggle = document.getElementById('themeToggle');
 
-// Config — API key and model are stored securely on the server (see api/generate.js)
-const API_ENDPOINT = '/api/generate';
+// Config — API key and model are stored securely on the server (see api/generate.js on Vercel)
+const API_ENDPOINT = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? '/api/generate'
+    : (window.location.protocol === 'file:' || window.location.hostname.endsWith('github.io'))
+    ? 'https://ai-essay-writer-blue.vercel.app/api/generate'
+    : '/api/generate';
 
 let isGenerating = false;
 
@@ -59,7 +63,6 @@ themeToggle.addEventListener('click', () => {
     localStorage.setItem('theme', theme);
     lucide.createIcons();
 });
-
 // Generate Action
 generateBtn.addEventListener('click', async () => {
     if (isGenerating) return;

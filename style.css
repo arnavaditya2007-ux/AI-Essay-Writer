@@ -131,7 +131,6 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
 .btn-theme {
     position: absolute;
     right: 0;
@@ -923,4 +922,7 @@ body.light-theme .step-card, body.light-theme .advantage-card {
         text-align: center;
     }
 }
+
+
+
 
