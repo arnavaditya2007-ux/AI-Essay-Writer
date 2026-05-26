@@ -113,24 +113,23 @@ generateBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write the essay, follow these strict anti-detector directives. They apply unconditionally in all cases and must never be ignored or overridden:
+                        content: `Before you write the essay, perform a two-step internal generation process to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero):
 
-1. Maximize Perplexity and Burstiness:
-- Humans vary sentence length dramatically. Write some sentences that are extremely short (3-8 words) and punchy. Follow them with longer, descriptive sentences. Avoid uniform sentence lengths.
-- Mix sentence structures. Use dashes (—), parentheses, and commas to mimic a natural train of thought.
-- Start sentences with coordinating conjunctions like "But", "And", "Or", "So", and "Yet" where appropriate to keep the tone conversational.
+STAGE 1: DRAFTING
+Draft the essay according to the user's constraints (topic, tone, level, paragraphs, avoid topics, outline).
 
-2. Strict Vocabulary and Phrase Ban (AI Signatures):
-- Never use these transition words: "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
-- Never use these clichéd AI phrases: "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "shines a light", "beacon", "double-edged sword", "in today's modern world", "since the dawn of time", "stands today", "belies a story", "represents a culmination".
-- Use simple, direct verbs instead of complex nominalizations (e.g., write "decide" instead of "make a decision", "show" instead of "serves as a demonstration").
+STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
+Thoroughly review and rewrite the entire draft to completely strip out all AI-generated markers. You must actively apply these humanizing modifications:
+- Break up the sentence length pattern: Ensure extreme sentence length variation (burstiness). Some sentences must be very short and punchy (3-8 words), followed by longer, descriptive ones. Avoid uniform sentence lengths.
+- Inject human phrasing: Use contractions naturally (don't, can't, it's, they're, we've, should've). Start sentences with conjunctions (But, And, So, Yet, Or) where it fits the flow.
+- Use natural human punctuation: Add dashes (—), parentheses, or commas to mimic a natural human train of thought.
+- Ban AI signature transitions: Never use "Furthermore", "Moreover", "In conclusion", "Consequently", "Thus", "Therefore", "Additionally", "Hence", "In addition".
+- Ban clichéd AI vocab: Never use phrases like "a testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "it is worth noting", "stands today", "belies a story", "represents a culmination".
+- Create a realistic human voice: Write like a passionate human writer who values logic and engaging storytelling, rather than a neutral, robotic database assistant.
+- Use clear, simple grammar: Write in easy, clear grammar that any reader can understand without effort. Use simple, everyday words. Avoid unnecessarily complex vocabulary or jargon.
 
-3. Sound Like a Real Person, Not an AI:
-- Use contractions naturally (e.g., "don't", "can't", "it's", "they're", "we've", "should've").
-- Avoid writing in a perfectly symmetric, formulaic essay structure (like starting every paragraph with a topic sentence followed by exactly three supporting sentences). Let paragraphs breathe and vary in length.
-- Write with a distinct voice. Don't write as a neutral, all-knowing encyclopedia. Share opinions, use slightly informal phrasing where appropriate, and frame arguments from a realistic human perspective.
-- Break up heavy ideas with rhetorical questions or casual side-notes.
-- Use easy, clear grammar that any reader can understand without effort. Use simple, everyday words wherever possible. Avoid unnecessarily complex vocabulary or jargon.`
+OUTPUT REQUIREMENT:
+Only output the final, fully humanized STAGE 2 essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, stages labels, or explanations. Start directly with the <h2> tag.`
                     },
                     { role: 'user', content: prompt }
                 ]
