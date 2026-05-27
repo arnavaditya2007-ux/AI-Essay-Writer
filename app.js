@@ -440,19 +440,14 @@ Thoroughly review and rewrite the provided essay to completely strip out all AI-
      * "and yeah", "so yeah", "but anyways"
      * "testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "culmination", "stands proudly"
 
-2. Syntactic Constraints:
-   - Sentence Length Cap: No sentence may exceed 15 words. Break up long clauses into short, abrupt sentences.
-   - No Apostrophes in Contractions: All contractions MUST be written without apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "arent"). Real students typing quickly omit these, and it is a major perplexity signal.
-   - Lowercase "i": The standalone pronoun "i" MUST always be lowercase "i".
-   - Capitalization Rules: The first letter of every single sentence and the first letter of every single paragraph MUST always be capitalized. Never start a sentence or a paragraph with a lowercase letter (for example, never start a sentence or paragraph with a lowercase 't' like 'the 17th century...', it MUST be capitalized as 'The 17th century...').
-   - Inconsistent Capitalization: Occasionally write proper nouns in lowercase (e.g., write "india", "agra", "taj mahal", "shah jahan" in lowercase). However, if a proper noun is the very first word of a sentence, it MUST start with a capital letter.
-
-3. Typo Density & Errors:
-   - You MUST inject exactly 2 to 3 spelling typos per paragraph.
-   - These typos MUST only be in LONG, complex words (never in short/basic words).
-   - Examples of allowed long-word typos to choose from: "definately" (definitely), "seperate" (separate), "goverment" (government), "enviroment" (environment), "beatiful" (beautiful), "neccesary" (necessary), "diferent" (different), "succesful" (successful), "begining" (beginning), "unnecesary" (unnecessary), "independant" (independent).
-   - Never misspell short words (do NOT write "becuase" or "untill"). Keep all short words spelled correctly.
-   - Use comma splices (joining two complete thoughts with just a comma, e.g., "they finished it in 1653, it took a long time").
+2. Perplexity and Burstiness (CRITICAL FOR BYPASSING):
+   - Burstiness Injection (Sentence Variation): You MUST violently vary sentence lengths. You must mix very short, punchy sentences (3-6 words) with extremely long, conversational, run-on sentences (25-40 words) that use conjunctions like 'and', 'but', 'because'. Do NOT make sentences uniform in length.
+   - Awkward Phrasing (Perplexity): Use slightly informal, conversational phrasing. Explain things as if talking to a friend rather than writing an academic paper, even if the requested tone is academic. Avoid perfect parallel structure. Sometimes start sentences with conjunctions like 'And', 'But', or 'Because'.
+   - Avoid Repetitive Starts: Do NOT start consecutive sentences with the same word or structure (e.g., do not write "The X shows Y. The A shows B. It demonstrates C."). Every sentence must start differently.
+   - Transition Removal: Never use standard transition words like 'Furthermore', 'Moreover', 'Additionally', 'However', 'In conclusion', 'Thus', 'Therefore'. Just jump straight into the next thought abruptly.
+   - No Apostrophes in Contractions: All contractions MUST be written without apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "arent"). Real students typing quickly omit these.
+   - Capitalization: The first letter of every single sentence MUST be capitalized. Occasionally write proper nouns in lowercase mid-sentence (e.g., write "india", "agra" in lowercase).
+   - Comma Splices: Use comma splices deliberately (joining two complete thoughts with just a comma, e.g., "they finished it in 1653, it took a long time").
 
 4. Structure & Punctuation Constraints:
    - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them into one or change the paragraph count under any circumstances. Keep the paragraph breaks exactly where they were in the original.
