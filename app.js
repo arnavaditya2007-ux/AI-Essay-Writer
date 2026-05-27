@@ -235,6 +235,19 @@ const injectTypos = (html) => {
     return div.innerHTML;
 };
 
+// Post-processor: programmatically filter out em-dashes and question marks
+const filterPunctuation = (html) => {
+    let filtered = html;
+    // Replace em-dashes and en-dashes with commas or spaces to maintain readability
+    filtered = filtered.replace(/—/g, ', ');
+    filtered = filtered.replace(/–/g, ', ');
+    
+    // Replace question marks with periods since questions are banned
+    filtered = filtered.replace(/\?/g, '.');
+    
+    return filtered;
+};
+
 // Generate Action
 generateBtn.addEventListener('click', async () => {
     if (isGenerating) return;
@@ -441,10 +454,11 @@ You must completely rewrite the essay to bypass AI detectors. AI detectors flag 
    - Do NOT use "fake human" slang like "basically", "super", "really", "stuff".
    - Use everyday vocabulary, but combine words in highly specific, slightly unusual ways. Avoid clichés entirely.
 
-3. ASYMMETRICAL STRUCTURE:
+3. ASYMMETRICAL STRUCTURE & BANNED PUNCTUATION:
    - Write as if you are a passionate expert explaining the topic to a peer in person. 
-   - Use em-dashes (—) to interject side thoughts. Occasionally start sentences with "But", "And", or "Because".
+   - Occasionally start sentences with "But", "And", or "Because".
    - Never use standard transition words like "Furthermore", "Moreover", "In conclusion", "Additionally", "Thus".
+   - BANNED PUNCTUATION: You MUST NEVER use em-dashes (—) or question marks (?). Write declarative sentences only.
 
 4. STRUCTURE RULES:
    - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them.
@@ -481,6 +495,7 @@ ${plainEssay}`
             let html = cleanHtml(data.choices[0].message.content);
             html = capitalizeFirstLetters(html);
             html = injectTypos(html);
+            html = filterPunctuation(html);
 
             essayOutput.innerHTML = html;
             
