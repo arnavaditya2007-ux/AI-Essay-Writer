@@ -434,31 +434,32 @@ humanizeBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
+                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero). AI detectors flag text that has low perplexity (predictable word choices) and low burstiness (uniform sentence length). To bypass them, you must write with HIGH perplexity, HIGH burstiness, and ASYMMETRICAL syntax.
 
 STAGE 2: CRITICAL HUMANIZATION (ANTI-AI DETECTION)
-You must completely rewrite the essay to bypass AI detectors. AI detectors flag text that has low perplexity (predictable word choices) and low burstiness (uniform sentence length). To bypass them, you must write with HIGH perplexity and HIGH burstiness.
 
 0. User Configuration Rules (MUST FOLLOW):
    - Topic: Stay strictly on the topic: "${topicInput.value.trim()}".
    - Writing Tone: Adhere strictly to the "${toneSelect.value}" tone.
    - Writing Level: Write exactly at the "${levelSelect.value}" level.
-   - Outline Constraints: ${subheadingsInput.value.trim() ? `You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".` : 'Maintain the original outline flow.'}
+   - Outline Constraints: ${subheadingsInput.value.trim() ? \`You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".\` : 'Maintain the original outline flow.'}
 
-1. EXTREME BURSTINESS (Crucial): 
-   - Your sentence lengths must be completely chaotic. You must include extremely short, punchy sentences (2-5 words). You must also include long, meandering sentences (30+ words). 
-   - Never write three sentences of the same length in a row. Force variation.
+1. EXTREME BURSTINESS & SENTENCE STRUCTURE (Crucial): 
+   - Your sentence lengths must be completely chaotic. Mix 2-word sentences with 40-word run-on sentences. 
+   - NEVER write three sentences of similar length in a row.
+   - ALWAYS start sentences directly with the subject. NEVER start a sentence with a dependent clause or participial phrase (e.g., NEVER write "Bursting with variations, India is...").
 
-2. HIGH PERPLEXITY & BANNED WORDS: 
-   - Do NOT use predictable, formal "essay" words like "supreme instance", "undying emblem", "monumental endeavor", "testament to", "crucial role", "delve", "tapestry", "unparalleled", "realm", "perished".
-   - Do NOT use "fake human" slang like "basically", "super", "really", "stuff".
-   - Use everyday vocabulary, but combine words in highly specific, slightly unusual ways. Avoid clichés entirely.
-
-3. ASYMMETRICAL STRUCTURE & BANNED PUNCTUATION:
-   - Write as if you are a passionate expert explaining the topic to a peer in person. 
-   - Occasionally start sentences with "But", "And", or "Because".
-   - Never use standard transition words like "Furthermore", "Moreover", "In conclusion", "Additionally", "Thus".
+2. STRICT SYNTACTIC BANS (ZeroGPT Triggers):
+   - BANNED: Do NOT use lists of three or four (e.g., NEVER write "landscape, culture, and people" or "moving in, building empires, and making art").
+   - BANNED: Do NOT use colons (:) in the title or anywhere in the essay.
+   - BANNED: Do NOT use symmetrical clauses (e.g., "Not only X, but also Y").
+   - BANNED: Do NOT use standard transition words ("Furthermore", "Moreover", "Additionally", "Thus", "In conclusion"). Instead, occasionally start sentences with "But", "And", or "Because".
    - BANNED PUNCTUATION: You MUST NEVER use em-dashes (—) or question marks (?). Write declarative sentences only.
+
+3. HIGH PERPLEXITY & VOCABULARY BANS: 
+   - Do NOT use predictable, formal "essay" words like "supreme instance", "tangled story", "sheer numbers", "monumental", "crucial role", "delve", "tapestry", "unparalleled", "realm", "perished".
+   - Do NOT overcompensate with "fake human" slang like "basically", "super early", "way ahead", "really", "stuff", "figured out". This will immediately flag as AI trying to sound human.
+   - Use plain, direct, and slightly idiosyncratic vocabulary. Describe things literally rather than using metaphors.
 
 4. STRUCTURE RULES:
    - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them.
