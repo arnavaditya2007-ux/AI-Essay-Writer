@@ -1204,4 +1204,57 @@ body.light-theme .ty-badge:hover svg {
     .thankyou-title   { font-size: 1.4rem; }
     .ty-badge         { padding: 9px 16px; font-size: 0.82rem; }
 }
+}
 
+/* Disclaimer Alert */
+.disclaimer-alert {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+
+.disclaimer-alert i {
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.disclaimer-alert strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.disclaimer-alert p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+body.light-theme .disclaimer-alert {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .disclaimer-alert i {
+    color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+    .disclaimer-alert {
+        margin: 20px 20px 40px;
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
