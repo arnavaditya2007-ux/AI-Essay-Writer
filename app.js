@@ -116,6 +116,38 @@ const cleanHtml = (text) => {
     return cleaned.trim();
 };
 
+// Post-processor: capitalize the first letter of every sentence in every <p> and <h2>
+const capitalizeFirstLetters = (html) => {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    div.querySelectorAll('p, h2').forEach(el => {
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+        let isFirstTextNode = true;
+        let node;
+
+        while ((node = walker.nextNode())) {
+            let text = node.textContent;
+
+            // Capitalize the very first letter of the paragraph/heading
+            if (isFirstTextNode && text.length > 0) {
+                const idx = text.search(/[a-zA-Z]/);
+                if (idx !== -1) {
+                    text = text.substring(0, idx) + text.charAt(idx).toUpperCase() + text.substring(idx + 1);
+                }
+                isFirstTextNode = false;
+            }
+
+            // Capitalize first letter after sentence-ending punctuation (. ? !)
+            text = text.replace(/([.!?]\s+)([a-z])/g, (m, punct, letter) => punct + letter.toUpperCase());
+
+            node.textContent = text;
+        }
+    });
+
+    return div.innerHTML;
+};
+
 // Generate Action
 generateBtn.addEventListener('click', async () => {
     if (isGenerating) return;
@@ -365,6 +397,7 @@ ${plainEssay}`
 
         if (data.choices && data.choices[0]?.message?.content) {
             let html = cleanHtml(data.choices[0].message.content);
+            html = capitalizeFirstLetters(html);
 
             essayOutput.innerHTML = html;
             
