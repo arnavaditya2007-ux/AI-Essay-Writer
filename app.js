@@ -148,6 +148,93 @@ const capitalizeFirstLetters = (html) => {
     return div.innerHTML;
 };
 
+// Post-processor: programmatically inject exactly 3-4 typos per paragraph into long words
+const injectTypos = (html) => {
+    const commonTypos = {
+        "environment": "enviroment", "definitely": "definately", "separate": "seperate", 
+        "government": "goverment", "beautiful": "beatiful", "necessary": "neccesary", 
+        "successful": "succesful", "beginning": "begining", "independent": "independant",
+        "different": "diferent", "unnecessary": "unnecesary", "believe": "beleive",
+        "receive": "recieve", "until": "untill", "truly": "truely", "occurrence": "occurance",
+        "argument": "arguement", "surprise": "suprise", "therefore": "therefor",
+        "weird": "wierd", "accommodate": "acommodate", "recommend": "recomend"
+    };
+
+    const makeTypo = (word) => {
+        const lower = word.toLowerCase();
+        if (commonTypos[lower]) {
+            return word[0] === word[0].toUpperCase() ? 
+                   commonTypos[lower].charAt(0).toUpperCase() + commonTypos[lower].slice(1) : 
+                   commonTypos[lower];
+        }
+        if (word.length >= 6) {
+            const chars = word.split('');
+            const swapIdx = Math.floor(Math.random() * (chars.length - 3)) + 1;
+            const temp = chars[swapIdx];
+            chars[swapIdx] = chars[swapIdx + 1];
+            chars[swapIdx + 1] = temp;
+            return chars.join('');
+        }
+        return word;
+    };
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    div.querySelectorAll('p').forEach(p => {
+        const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
+        let textNodes = [];
+        let node;
+        while ((node = walker.nextNode())) {
+            textNodes.push(node);
+        }
+
+        let eligibleWords = [];
+        textNodes.forEach(tNode => {
+            const text = tNode.textContent;
+            const regex = /\b[A-Za-z]{6,}\b/g;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                eligibleWords.push({
+                    node: tNode,
+                    word: match[0],
+                    startIdx: match.index,
+                    endIdx: match.index + match[0].length
+                });
+            }
+        });
+
+        const numTypos = Math.floor(Math.random() * 2) + 3; // 3 or 4
+        
+        for (let i = eligibleWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [eligibleWords[i], eligibleWords[j]] = [eligibleWords[j], eligibleWords[i]];
+        }
+
+        const selected = eligibleWords.slice(0, numTypos);
+        const nodeReplacements = new Map();
+        
+        selected.forEach(sel => {
+            if (!nodeReplacements.has(sel.node)) {
+                nodeReplacements.set(sel.node, []);
+            }
+            nodeReplacements.get(sel.node).push(sel);
+        });
+
+        nodeReplacements.forEach((replacements, tNode) => {
+            replacements.sort((a, b) => b.startIdx - a.startIdx);
+            let text = tNode.textContent;
+            replacements.forEach(rep => {
+                const typoed = makeTypo(rep.word);
+                text = text.substring(0, rep.startIdx) + typoed + text.substring(rep.endIdx);
+            });
+            tNode.textContent = text;
+        });
+    });
+
+    return div.innerHTML;
+};
+
 // Generate Action
 generateBtn.addEventListener('click', async () => {
     if (isGenerating) return;
@@ -405,6 +492,7 @@ ${plainEssay}`
         if (data.choices && data.choices[0]?.message?.content) {
             let html = cleanHtml(data.choices[0].message.content);
             html = capitalizeFirstLetters(html);
+            html = injectTypos(html);
 
             essayOutput.innerHTML = html;
             
