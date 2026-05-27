@@ -423,31 +423,32 @@ humanizeBtn.addEventListener('click', async () => {
                         role: 'system',
                         content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
 
-STAGE 2: CRITICAL HUMANIZATION & ORIGINAL RULE ENFORCEMENT
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based humanizing modifications, while STRICTLY ADHERING to the user's original configuration rules:
+STAGE 2: CRITICAL HUMANIZATION (ANTI-AI DETECTION)
+You must completely rewrite the essay to bypass AI detectors. AI detectors flag text that has low perplexity (predictable word choices) and low burstiness (uniform sentence length). To bypass them, you must write with HIGH perplexity and HIGH burstiness.
 
 0. User Configuration Rules (MUST FOLLOW):
    - Topic: Stay strictly on the topic: "${topicInput.value.trim()}".
    - Writing Tone: Adhere strictly to the "${toneSelect.value}" tone.
    - Writing Level: Write exactly at the "${levelSelect.value}" level.
    - Outline Constraints: ${subheadingsInput.value.trim() ? `You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".` : 'Maintain the original outline flow.'}
-   - ${avoidInput.value.trim() ? `Avoid Topics: Strictly avoid referencing or mentioning: "${avoidInput.value.trim()}".` : 'No specific topics to avoid.'}
 
-1. Banned AI Signatures & Words (STRICTLY PROHIBITED):
-   - Do NOT try to sound like a "student" or use casual slang. Write like a highly competent human author.
-   - NEVER use these AI filler words: "testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "culmination", "stands proudly", "fosters", "underscores".
-   - NEVER use these "fake human" conversational words: "basically", "literally", "actually", "super", "very", "really", "stuff", "thing".
+1. EXTREME BURSTINESS (Crucial): 
+   - Your sentence lengths must be completely chaotic. You must include extremely short, punchy sentences (2-5 words). You must also include long, meandering sentences (30+ words). 
+   - Never write three sentences of the same length in a row. Force variation.
 
-2. Perplexity & Structural Variation (CRITICAL FOR BYPASSING):
-   - Semantic Density: Humans pack specific, concrete details into sentences rather than using broad, sweeping generalizations. Instead of "The Taj Mahal shows his love," write "Shah Jahan commissioned the white marble complex as an obsessive monument to his late wife."
-   - Extreme Burstiness: You MUST violently vary sentence lengths. Mix very short, punchy declarative sentences (4-7 words) with extremely long, complex, nested sentences (25-45 words) that use em-dashes or semicolons.
-   - Non-Standard Syntax: Avoid starting sentences with "The [Noun]". Start sentences with prepositional phrases, dependent clauses, or adverbs. (e.g., "Carved from Makrana marble, the central dome...")
-   - Asymmetrical Flow: Do NOT use perfect parallel structure. Make lists slightly asymmetrical.
-   - Transition Removal: Never use predictable transition words like 'Furthermore', 'Moreover', 'Additionally', 'However', 'In conclusion', 'Thus'. Just jump straight into the next thought abruptly.
+2. HIGH PERPLEXITY & BANNED WORDS: 
+   - Do NOT use predictable, formal "essay" words like "supreme instance", "undying emblem", "monumental endeavor", "testament to", "crucial role", "delve", "tapestry", "unparalleled", "realm", "perished".
+   - Do NOT use "fake human" slang like "basically", "super", "really", "stuff".
+   - Use everyday vocabulary, but combine words in highly specific, slightly unusual ways. Avoid clichés entirely.
 
-3. Structure & Punctuation Constraints:
-   - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them into one or change the paragraph count under any circumstances.
-   - Word Count & Detail Preservation: The humanized essay MUST preserve the length and detail of the original. The total word count of your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words.
+3. ASYMMETRICAL STRUCTURE:
+   - Write as if you are a passionate expert explaining the topic to a peer in person. 
+   - Use em-dashes (—) to interject side thoughts. Occasionally start sentences with "But", "And", or "Because".
+   - Never use standard transition words like "Furthermore", "Moreover", "In conclusion", "Additionally", "Thus".
+
+4. STRUCTURE RULES:
+   - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them.
+   - Word Count: Your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words.
 
 OUTPUT REQUIREMENT:
 Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
