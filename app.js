@@ -100,6 +100,22 @@ themeToggle.addEventListener('click', () => {
     localStorage.setItem('theme', theme);
     lucide.createIcons();
 });
+// Shared HTML cleaner — strips markdown code fences from AI responses
+const cleanHtml = (text) => {
+    let cleaned = text.trim();
+    cleaned = cleaned.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
+                     .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
+    if (cleaned.startsWith('```html')) {
+        cleaned = cleaned.replace(/^```html\s*/, '');
+    } else if (cleaned.startsWith('```')) {
+        cleaned = cleaned.replace(/^```\s*/, '');
+    }
+    if (cleaned.endsWith('```')) {
+        cleaned = cleaned.replace(/\s*```$/, '');
+    }
+    return cleaned.trim();
+};
+
 // Generate Action
 generateBtn.addEventListener('click', async () => {
     if (isGenerating) return;
@@ -156,20 +172,7 @@ generateBtn.addEventListener('click', async () => {
                         6. Absolutely NO bold text is allowed (do not use <strong>, <b>, or markdown **). Everything inside paragraphs must be standard weight.
                         7. Absolutely NO long dashes or em-dashes (— or --) are allowed in the essay text. Use commas or split into separate sentences instead.`;
 
-        const cleanHtml = (text) => {
-            let cleaned = text.trim();
-            cleaned = cleaned.replace(/^```html\s*([\s\S]*?)\s*```$/g, '$1')
-                             .replace(/^```\s*([\s\S]*?)\s*```$/g, '$1');
-            if (cleaned.startsWith('```html')) {
-                cleaned = cleaned.replace(/^```html\s*/, '');
-            } else if (cleaned.startsWith('```')) {
-                cleaned = cleaned.replace(/^```\s*/, '');
-            }
-            if (cleaned.endsWith('```')) {
-                cleaned = cleaned.replace(/\s*```$/, '');
-            }
-            return cleaned.trim();
-        };        const response = await fetchWithTimeout(API_ENDPOINT, {
+        const response = await fetchWithTimeout(API_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
