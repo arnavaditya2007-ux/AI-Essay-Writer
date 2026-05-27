@@ -336,8 +336,15 @@ humanizeBtn.addEventListener('click', async () => {
                         role: 'system',
                         content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
 
-STAGE 2: CRITICAL HUMANIZATION (THE CRUCIAL STEP)
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based student-style humanizing modifications:
+STAGE 2: CRITICAL HUMANIZATION & ORIGINAL RULE ENFORCEMENT
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based student-style humanizing modifications, while STRICTLY ADHERING to the user's original configuration rules:
+
+0. User Configuration Rules (MUST FOLLOW):
+   - Topic: Stay strictly on the topic: "${topicInput.value.trim()}".
+   - Writing Tone: Adhere strictly to the "${toneSelect.value}" tone.
+   - Writing Level: Write exactly at the "${levelSelect.value}" level.
+   - Outline Constraints: ${subheadingsInput.value.trim() ? `You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".` : 'Maintain the original outline flow.'}
+   - ${avoidInput.value.trim() ? `Avoid Topics: Strictly avoid referencing or mentioning: "${avoidInput.value.trim()}".` : 'No specific topics to avoid.'}
 
 1. Banned AI Casual Fillers (STRICTLY PROHIBITED):
    - You must NEVER use the following words or phrases. They are common AI signatures when trying to sound casual:
