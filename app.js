@@ -148,104 +148,27 @@ const capitalizeFirstLetters = (html) => {
     return div.innerHTML;
 };
 
-// Post-processor: programmatically inject exactly 3-4 typos per paragraph into long words
-const injectTypos = (html) => {
-    const commonTypos = {
-        "environment": "enviroment", "definitely": "definately", "separate": "seperate", 
-        "government": "goverment", "beautiful": "beatiful", "necessary": "neccesary", 
-        "successful": "succesful", "beginning": "begining", "independent": "independant",
-        "different": "diferent", "unnecessary": "unnecesary", "believe": "beleive",
-        "receive": "recieve", "until": "untill", "truly": "truely", "occurrence": "occurance",
-        "argument": "arguement", "surprise": "suprise", "therefore": "therefor",
-        "weird": "wierd", "accommodate": "acommodate", "recommend": "recomend"
-    };
 
-    const makeTypo = (word) => {
-        const lower = word.toLowerCase();
-        if (commonTypos[lower]) {
-            return word[0] === word[0].toUpperCase() ? 
-                   commonTypos[lower].charAt(0).toUpperCase() + commonTypos[lower].slice(1) : 
-                   commonTypos[lower];
-        }
-        if (word.length >= 6) {
-            const chars = word.split('');
-            const swapIdx = Math.floor(Math.random() * (chars.length - 3)) + 1;
-            const temp = chars[swapIdx];
-            chars[swapIdx] = chars[swapIdx + 1];
-            chars[swapIdx + 1] = temp;
-            return chars.join('');
-        }
-        return word;
-    };
 
+// Post-processor: programmatically filter out all symbols except comma and period
+const filterPunctuation = (html) => {
     const div = document.createElement('div');
     div.innerHTML = html;
 
-    div.querySelectorAll('p').forEach(p => {
-        const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
-        let textNodes = [];
-        let node;
-        while ((node = walker.nextNode())) {
-            textNodes.push(node);
-        }
-
-        let eligibleWords = [];
-        textNodes.forEach(tNode => {
-            const text = tNode.textContent;
-            const regex = /\b[A-Za-z]{6,}\b/g;
-            let match;
-            while ((match = regex.exec(text)) !== null) {
-                eligibleWords.push({
-                    node: tNode,
-                    word: match[0],
-                    startIdx: match.index,
-                    endIdx: match.index + match[0].length
-                });
-            }
-        });
-
-        const numTypos = Math.floor(Math.random() * 2) + 3; // 3 or 4
-        
-        for (let i = eligibleWords.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [eligibleWords[i], eligibleWords[j]] = [eligibleWords[j], eligibleWords[i]];
-        }
-
-        const selected = eligibleWords.slice(0, numTypos);
-        const nodeReplacements = new Map();
-        
-        selected.forEach(sel => {
-            if (!nodeReplacements.has(sel.node)) {
-                nodeReplacements.set(sel.node, []);
-            }
-            nodeReplacements.get(sel.node).push(sel);
-        });
-
-        nodeReplacements.forEach((replacements, tNode) => {
-            replacements.sort((a, b) => b.startIdx - a.startIdx);
-            let text = tNode.textContent;
-            replacements.forEach(rep => {
-                const typoed = makeTypo(rep.word);
-                text = text.substring(0, rep.startIdx) + typoed + text.substring(rep.endIdx);
-            });
-            tNode.textContent = text;
-        });
-    });
-
+    const walker = document.createTreeWalker(div, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while ((node = walker.nextNode())) {
+        let text = node.textContent;
+        // Replace dashes with spaces to prevent words from joining
+        text = text.replace(/[—–-]/g, ' ');
+        // Replace question marks and exclamation points with periods
+        text = text.replace(/[\?\!]/g, '.');
+        // Strip out all other symbols except letters, numbers, spaces, commas, periods, and apostrophes
+        text = text.replace(/[^a-zA-Z0-9\s,\.']/g, '');
+        node.textContent = text;
+    }
+    
     return div.innerHTML;
-};
-
-// Post-processor: programmatically filter out em-dashes and question marks
-const filterPunctuation = (html) => {
-    let filtered = html;
-    // Replace em-dashes and en-dashes with commas or spaces to maintain readability
-    filtered = filtered.replace(/—/g, ', ');
-    filtered = filtered.replace(/–/g, ', ');
-    
-    // Replace question marks with periods since questions are banned
-    filtered = filtered.replace(/\?/g, '.');
-    
-    return filtered;
 };
 
 // Generate Action
@@ -434,10 +357,10 @@ humanizeBtn.addEventListener('click', async () => {
                 messages: [
                     {
                         role: 'system',
-                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
+                        content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero). Bypass AI detectors by breaking the predictable, uniform patterns that machine learning models rely on to flag text.
 
 STAGE 2: CRITICAL HUMANIZATION (ANTI-AI DETECTION)
-You must completely rewrite the essay to bypass AI detectors. AI detectors flag text that has low perplexity (predictable word choices) and low burstiness (uniform sentence length). To bypass them, you must write with HIGH perplexity and HIGH burstiness.
+You must completely rewrite the essay using these actionable editing techniques:
 
 0. User Configuration Rules (MUST FOLLOW):
    - Topic: Stay strictly on the topic: "${topicInput.value.trim()}".
@@ -445,22 +368,28 @@ You must completely rewrite the essay to bypass AI detectors. AI detectors flag 
    - Writing Level: Write exactly at the "${levelSelect.value}" level.
    - Outline Constraints: ${subheadingsInput.value.trim() ? `You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".` : 'Maintain the original outline flow.'}
 
-1. EXTREME BURSTINESS (Crucial): 
-   - Your sentence lengths must be completely chaotic. You must include extremely short, punchy sentences (2-5 words). You must also include long, meandering sentences (30+ words). 
-   - Never write three sentences of the same length in a row. Force variation.
+1. Short Words & Short Sentences (Simple Grammar): A real human typing quickly wants to save time. They avoid long words and long sentences. You MUST use short, everyday words (1-2 syllables). Keep your logic simple and your grammar extremely clear and easy to understand. To maintain burstiness, mix ultra-short sentences (2-4 words) with basic sentences (8-12 words), but completely avoid complex, winding lines and long vocabulary.
 
-2. HIGH PERPLEXITY & BANNED WORDS: 
-   - Do NOT use predictable, formal "essay" words like "supreme instance", "undying emblem", "monumental endeavor", "testament to", "crucial role", "delve", "tapestry", "unparalleled", "realm", "perished".
-   - Do NOT use "fake human" slang like "basically", "super", "really", "stuff".
-   - Use everyday vocabulary, but combine words in highly specific, slightly unusual ways. Avoid clichés entirely.
+2. Conceptual Depth: Inject highly specific, concrete examples and nuanced, expert-level observations that a predictive language model cannot generate. Avoid generalizations.
 
-3. ASYMMETRICAL STRUCTURE & BANNED PUNCTUATION:
-   - Write as if you are a passionate expert explaining the topic to a peer in person. 
-   - Occasionally start sentences with "But", "And", or "Because".
-   - Never use standard transition words like "Furthermore", "Moreover", "In conclusion", "Additionally", "Thus".
-   - BANNED PUNCTUATION: You MUST NEVER use em-dashes (—) or question marks (?). Write declarative sentences only.
+3. Ban AI Buzzwords & Metaphors (Perplexity Hack): AI writes using generic, grandiose metaphors to sound profound. You MUST completely avoid words and phrases like "tapestry", "unbroken march", "ripple effect", "ancient legacies", "modern aspirations", "delve", "testament to", "crucial role", or "realm". Never use grand, poetic metaphors. Write literally, directly, and plainly, like a smart person explaining something at a bar, not an epic movie trailer.
 
-4. STRUCTURE RULES:
+4. Kill the "Perfect" Transitions: AI predictably relies on words like "However", "Therefore", "Moreover", "Consequently", and "Furthermore". You must organically remove 80% of these transition words. When a transition is absolutely necessary, use abrupt, direct phrasing rather than formal filler, while maintaining the integrity of the essay format.
+
+5. Ban Syntactic Symmetry & Anaphora: Do NOT start consecutive sentences with the same word or phrase (e.g., NEVER write "They help kids... They help kids..."). Break up perfectly balanced paragraph structures (e.g., avoiding "For boys... For girls..."). Make the structure highly asymmetrical, avoiding parallel lists or perfectly summarizing conclusions.
+
+6. Incorporate active voice: Convert passive, clinical sentences into direct, action-oriented statements to convey strong, authoritative arguments.
+
+7. Introduce "Cognitive Scars" (Mistakes): AI text is surgically clean. You must add the things tired human writers do. Include occasional "cognitive scars" such as:
+   - The Academic False Start: Re-framing a point mid-thought (e.g., "The main issue here—or rather, the more pressing concern—is...").
+   - The Tangent: Including a sentence that is only marginally relevant before awkwardly pulling back to the main point.
+   - The Awkward Phrase: Use slightly clunky, imperfect sentence structures that make logical sense but lack elegant AI polish.
+
+8. STYLE ANCHOR (FEW-SHOT EXAMPLE):
+   To understand the exact style, vocabulary level, and syntactic clumsiness you MUST mimic, study this 100% human-written example. Notice the complete lack of transitions, the basic vocabulary ("very old place"), the awkward phrasing ("The height of north of India has"), and the lack of complex opening clauses:
+   "There is no other National identity like India’s in this world. It is also a very old place full of culture that is more than just its geography. Indian geography goes from north to south about 4,000 miles (6,400 km). The height of north of India has snow capped mountains and the south has warm, sunny beaches. This range in height and geography can be seen through the variety of languages, ethnic groups, and customs in all parts of India. The ever changing nature of cultural patterns has developed over an extended period and is still developing today. To study cultural patterns of National Identity in India requires consideration of their economy, social structure and global influence."
+
+9. STRUCTURE RULES:
    - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them.
    - Word Count: Your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words.
 
@@ -494,7 +423,7 @@ ${plainEssay}`
         if (data.choices && data.choices[0]?.message?.content) {
             let html = cleanHtml(data.choices[0].message.content);
             html = capitalizeFirstLetters(html);
-            html = injectTypos(html);
+
             html = filterPunctuation(html);
 
             essayOutput.innerHTML = html;
