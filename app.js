@@ -424,7 +424,7 @@ humanizeBtn.addEventListener('click', async () => {
                         content: `Before you write, perform a critical humanization rewrite to guarantee the final text completely bypasses all AI detectors (like ZeroGPT, Turnitin, GPTZero) by making it look like it was written by an average student typing quickly:
 
 STAGE 2: CRITICAL HUMANIZATION & ORIGINAL RULE ENFORCEMENT
-Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based student-style humanizing modifications, while STRICTLY ADHERING to the user's original configuration rules:
+Thoroughly review and rewrite the provided essay to completely strip out all AI-generated markers. You must actively apply these strict, rule-based humanizing modifications, while STRICTLY ADHERING to the user's original configuration rules:
 
 0. User Configuration Rules (MUST FOLLOW):
    - Topic: Stay strictly on the topic: "${topicInput.value.trim()}".
@@ -433,29 +433,21 @@ Thoroughly review and rewrite the provided essay to completely strip out all AI-
    - Outline Constraints: ${subheadingsInput.value.trim() ? `You must maintain the flow of this outline: "${subheadingsInput.value.trim()}".` : 'Maintain the original outline flow.'}
    - ${avoidInput.value.trim() ? `Avoid Topics: Strictly avoid referencing or mentioning: "${avoidInput.value.trim()}".` : 'No specific topics to avoid.'}
 
-1. Banned AI Casual Fillers (STRICTLY PROHIBITED):
-   - You must NEVER use the following words or phrases. They are common AI signatures when trying to sound casual:
-     * basically, honestly, literally, actually, essentially, simply, really, super, very
-     * thing, stuff (e.g., do not write "mausoleum thing" or "architecture stuff")
-     * "and yeah", "so yeah", "but anyways"
-     * "testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "culmination", "stands proudly"
+1. Banned AI Signatures & Words (STRICTLY PROHIBITED):
+   - Do NOT try to sound like a "student" or use casual slang. Write like a highly competent human author.
+   - NEVER use these AI filler words: "testament to", "not only... but also", "plays a crucial role", "delve", "tapestry", "unparalleled", "culmination", "stands proudly", "fosters", "underscores".
+   - NEVER use these "fake human" conversational words: "basically", "literally", "actually", "super", "very", "really", "stuff", "thing".
 
-2. Perplexity and Burstiness (CRITICAL FOR BYPASSING):
-   - Burstiness Injection (Sentence Variation): You MUST violently vary sentence lengths. You must mix very short, punchy sentences (3-6 words) with extremely long, conversational, run-on sentences (25-40 words) that use conjunctions like 'and', 'but', 'because'. Do NOT make sentences uniform in length.
-   - Awkward Phrasing (Perplexity): Use slightly informal, conversational phrasing. Explain things as if talking to a friend rather than writing an academic paper, even if the requested tone is academic. Avoid perfect parallel structure. Sometimes start sentences with conjunctions like 'And', 'But', or 'Because'.
-   - Avoid Repetitive Starts: Do NOT start consecutive sentences with the same word or structure (e.g., do not write "The X shows Y. The A shows B. It demonstrates C."). Every sentence must start differently.
-   - Transition Removal: Never use standard transition words like 'Furthermore', 'Moreover', 'Additionally', 'However', 'In conclusion', 'Thus', 'Therefore'. Just jump straight into the next thought abruptly.
-   - No Apostrophes in Contractions: All contractions MUST be written without apostrophes (e.g., write "dont", "cant", "its", "im", "ive", "didnt", "wasnt", "arent"). Real students typing quickly omit these.
-   - Capitalization: The first letter of every single sentence MUST be capitalized. Occasionally write proper nouns in lowercase mid-sentence (e.g., write "india", "agra" in lowercase).
-   - Comma Splices: Use comma splices deliberately (joining two complete thoughts with just a comma, e.g., "they finished it in 1653, it took a long time").
+2. Perplexity & Structural Variation (CRITICAL FOR BYPASSING):
+   - Semantic Density: Humans pack specific, concrete details into sentences rather than using broad, sweeping generalizations. Instead of "The Taj Mahal shows his love," write "Shah Jahan commissioned the white marble complex as an obsessive monument to his late wife."
+   - Extreme Burstiness: You MUST violently vary sentence lengths. Mix very short, punchy declarative sentences (4-7 words) with extremely long, complex, nested sentences (25-45 words) that use em-dashes or semicolons.
+   - Non-Standard Syntax: Avoid starting sentences with "The [Noun]". Start sentences with prepositional phrases, dependent clauses, or adverbs. (e.g., "Carved from Makrana marble, the central dome...")
+   - Asymmetrical Flow: Do NOT use perfect parallel structure. Make lists slightly asymmetrical.
+   - Transition Removal: Never use predictable transition words like 'Furthermore', 'Moreover', 'Additionally', 'However', 'In conclusion', 'Thus'. Just jump straight into the next thought abruptly.
 
-4. Structure & Punctuation Constraints:
-   - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them into one or change the paragraph count under any circumstances. Keep the paragraph breaks exactly where they were in the original.
-   - Word Count & Detail Preservation: The humanized essay MUST preserve the length, detail, and arguments of the original essay. Do not summarize, shorten, or simplify it. The total word count of your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words (the input has exactly ${originalWordCount} words).
-   - Use 1-2 parenthetical remarks to show a student's side thoughts (e.g., "(i think it was in 1631 or something)" or "(our history teacher talked about this)").
-   - Never use triads or lists of three items (avoid "A, B, and C").
-   - Absolutely NO bold formatting is allowed (do NOT use <strong>, <b>, or markdown **). Everything must be standard text weight.
-   - Absolutely NO em-dashes (—) or double hyphens (--) are allowed. Use commas or split sentences.
+3. Structure & Punctuation Constraints:
+   - Paragraph Count Constraint: You MUST output exactly ${paragraphCount} body paragraphs (using <p> tags). Do not merge them into one or change the paragraph count under any circumstances.
+   - Word Count & Detail Preservation: The humanized essay MUST preserve the length and detail of the original. The total word count of your humanized output MUST be between ${originalWordCount - 15} and ${originalWordCount + 15} words.
 
 OUTPUT REQUIREMENT:
 Only output the final, fully humanized essay formatted directly as HTML (<h2> for the title, <p> for the paragraphs). Do not output any markdown code blocks, labels, or explanations. Start directly with the <h2> tag.`
