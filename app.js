@@ -506,6 +506,7 @@ ${plainEssay}`
                 <span>Humanized!</span>
             `;
             lucide.createIcons();
+            triggerFeedbackModalOnce();
         } else {
             essayOutput.innerHTML = currentEssay; // Restore original
             essayOutput.insertAdjacentHTML('afterbegin', '<p style="color:#ef4444;margin-bottom:1rem;">No humanized content was returned. Please try again.</p>');
@@ -545,4 +546,107 @@ copyBtn.addEventListener('click', () => {
         console.error('Failed to copy: ', err);
     });
 });
+
+// Feedback Modal Rating and Submission Logic
+function initFeedbackModal() {
+    const feedbackModal = document.getElementById('feedbackModal');
+    if (!feedbackModal) return;
+
+    const starBtns = feedbackModal.querySelectorAll('.star-btn');
+    const commentField = document.getElementById('feedbackComment');
+    const submitBtn = document.getElementById('feedbackSubmitBtn');
+    const cancelBtn = document.getElementById('feedbackCancelBtn');
+    const closeBtn = document.getElementById('feedbackCloseBtn');
+    const feedbackForm = document.getElementById('feedbackForm');
+    const successState = document.getElementById('feedbackSuccessState');
+
+    let currentRating = 0;
+
+    // Handle rating selection
+    starBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const rating = parseInt(btn.getAttribute('data-rating'), 10);
+            currentRating = rating;
+            
+            // Set active states for stars
+            starBtns.forEach(sBtn => {
+                const sRating = parseInt(sBtn.getAttribute('data-rating'), 10);
+                if (sRating <= rating) {
+                    sBtn.classList.add('active');
+                } else {
+                    sBtn.classList.remove('active');
+                }
+            });
+
+            // Enable submit button
+            submitBtn.disabled = false;
+        });
+    });
+
+    const closeModal = () => {
+        feedbackModal.classList.remove('active');
+    };
+
+    cancelBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeModal);
+    feedbackModal.addEventListener('click', (e) => {
+        if (e.target === feedbackModal) {
+            closeModal();
+        }
+    });
+
+    // Form submission simulation
+    feedbackForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (currentRating === 0) return;
+
+        // Disable elements during submission
+        submitBtn.disabled = true;
+        starBtns.forEach(btn => btn.disabled = true);
+        commentField.disabled = true;
+
+        // Visual loading indicator on submit button
+        submitBtn.innerHTML = `
+            <span>Submitting</span>
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+
+        // Simulate network request
+        setTimeout(() => {
+            console.log('Feedback submitted:', {
+                rating: currentRating,
+                comment: commentField.value.trim()
+            });
+
+            // Display success overlay
+            successState.classList.add('active');
+
+            // Automatically close modal after success message
+            setTimeout(() => {
+                closeModal();
+            }, 1800);
+        }, 1000);
+    });
+}
+
+function triggerFeedbackModalOnce() {
+    const feedbackModal = document.getElementById('feedbackModal');
+    if (!feedbackModal) return;
+
+    const prompted = localStorage.getItem('essayai_feedback_prompted');
+    if (!prompted) {
+        // Mark as prompted immediately to avoid showing it multiple times
+        localStorage.setItem('essayai_feedback_prompted', 'true');
+        
+        // Show modal after 1.5 seconds for a natural transition
+        setTimeout(() => {
+            feedbackModal.classList.add('active');
+        }, 1500);
+    }
+}
+
+// Initialize Feedback
+initFeedbackModal();
 

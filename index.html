@@ -265,6 +265,53 @@
 
     </div>
 
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal-overlay">
+        <div class="feedback-card">
+            <button class="feedback-close" id="feedbackCloseBtn" aria-label="Close modal">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="feedback-header">
+                <div class="feedback-badge-icon">
+                    <i data-lucide="star"></i>
+                </div>
+                <h3>Rate Your Experience</h3>
+                <p>We value your feedback. How would you rate the quality of the generated and humanized content?</p>
+            </div>
+            
+            <form id="feedbackForm">
+                <div class="star-rating">
+                    <button type="button" class="star-btn" data-rating="1" aria-label="1 star"><i data-lucide="star"></i></button>
+                    <button type="button" class="star-btn" data-rating="2" aria-label="2 stars"><i data-lucide="star"></i></button>
+                    <button type="button" class="star-btn" data-rating="3" aria-label="3 stars"><i data-lucide="star"></i></button>
+                    <button type="button" class="star-btn" data-rating="4" aria-label="4 stars"><i data-lucide="star"></i></button>
+                    <button type="button" class="star-btn" data-rating="5" aria-label="5 stars"><i data-lucide="star"></i></button>
+                </div>
+                
+                <div class="feedback-comment-group">
+                    <label for="feedbackComment">Your thoughts (optional)</label>
+                    <textarea id="feedbackComment" rows="3" placeholder="Tell us what you liked or how we can improve..."></textarea>
+                </div>
+                
+                <div class="feedback-actions">
+                    <button type="button" class="btn-cancel" id="feedbackCancelBtn">Dismiss</button>
+                    <button type="submit" class="btn-submit" id="feedbackSubmitBtn" disabled>
+                        <span>Submit Feedback</span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Success State -->
+            <div class="feedback-success" id="feedbackSuccessState">
+                <div class="success-icon-wrapper">
+                    <i data-lucide="sparkles"></i>
+                </div>
+                <h3>Thank You!</h3>
+                <p>Your response has been submitted. We appreciate your feedback to make EssayAI even better.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Donation Action Button -->
     <a href="donate.html" class="btn-donate-float" title="Support the Developer">
         <i data-lucide="heart"></i>
